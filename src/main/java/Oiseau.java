@@ -60,7 +60,7 @@ public class Oiseau extends Carre implements Deplacable {
 
 
     public void sauter() {
-
+        vitesseVertical = 2;
     }
 
     public void dessiner(Graphics2D dessin) {

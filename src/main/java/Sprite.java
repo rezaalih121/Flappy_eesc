@@ -45,6 +45,10 @@ public abstract class Sprite {
 
     public abstract void dessiner(Graphics2D dessin, ImageObserver imageObserver);
 
+    public abstract boolean collision(int x, int y);
+
+    public abstract boolean collision(Sprite sprite);
+
     public abstract int getCentreX();
 
     public abstract int getCentreY();

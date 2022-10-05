@@ -69,7 +69,6 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
                 Nuage nuage = new Nuage(largeurEcran, hauteurEcran);
                 listDeplacable.add(nuage);
                 listSprite.add(nuage);
-
             }
         } else {
 
@@ -119,6 +118,15 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
                     for (Deplacable deplacable : listDeplacable) {
                         deplacable.deplacer(largeurEcran, hauteurEcran);
                     }
+
+                    //ArrayList<Oiseau> oiseaus = new ArrayList<>();
+
+                    if (tuyau.collision(oiseau)) {
+                        System.out.println("perdu");
+                        pause = true;
+                    }
+
+
                 }
             } else {
                 dessin.setColor(new Color(0, 0, 0, 0.1f));
