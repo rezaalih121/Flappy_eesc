@@ -1,8 +1,8 @@
+import javax.management.monitor.MonitorSettingException;
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.ImageObserver;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,16 +10,24 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
 
     protected static int largeurEcran = 600;
     protected static int hauteurEcran = 600;
-    protected boolean pause;
-    protected boolean perdu;
 
     protected Oiseau oiseau;
     protected Tuyau tuyau;
+    protected Moustique moustique;
 
+    protected int tuyauLargeur;
+    protected long point = 0;
+    protected int tuyauHauteur;
+    protected int nombreDeMoustique;
+    protected int textWidth = 0;
     protected ArrayList<Deplacable> listDeplacable = new ArrayList<>();
     protected ArrayList<Sprite> listSprite = new ArrayList<>();
+    protected ArrayList<Moustique> listMoustique = new ArrayList<>();
 
     private static final Random RANDOMISER = new Random();
+
+    protected Etat etat = Etat.EN_COURS;
+
 
     public static int generateRandomNumber(int from, int to) {
         return RANDOMISER.nextInt((to + 1) - from) + from;
@@ -57,25 +65,18 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
 
     public void initialiser() {
         // Si cest la premiere initialisation
-        pause = false;
+        etat = Etat.EN_COURS;
+
         if (oiseau == null) {
             oiseau = new Oiseau(hauteurEcran);
-
-
             listDeplacable = new ArrayList<>();
+            listMoustique = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
 
-/*
-            for (int i = 0; i < 0; i++) {
+                tuyauLargeur = (tuyauLargeur == largeurEcran + i * generateRandomNumber(100, 200)) ? (largeurEcran + i * generateRandomNumber(100, 200)) : (largeurEcran + i * generateRandomNumber(100, 200));
+                tuyauHauteur = (tuyauLargeur == hauteurEcran - i * generateRandomNumber(5, 50)) ? hauteurEcran - i * generateRandomNumber(5, 50) : hauteurEcran - i * generateRandomNumber(5, 50);
 
-                tuyau = new Tuyau(200 * (int) (Math.random() * 2), hauteurEcran + (int) (Math.random() * 30), largeurEcran + (int) (Math.random() * 50));
-                listDeplacable.add(tuyau);
-                listSprite.add(tuyau);
-            }
-*/
-            //tuyau = new Tuyau(200, hauteurEcran, largeurEcran);
-
-            for (int i = 0; i < 10; i++) {
-                tuyau = new Tuyau(50 + generateRandomNumber(70, 200), hauteurEcran - generateRandomNumber(0, 400), largeurEcran + generateRandomNumber(600, 700));
+                tuyau = new Tuyau(121 + generateRandomNumber(70, 200), hauteurEcran, tuyauLargeur);
                 listDeplacable.add(tuyau);
                 listSprite.add(tuyau);
             }
@@ -85,16 +86,30 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
 
             listSprite.add(oiseau);
 
-            tuyau = new Tuyau(300, hauteurEcran, largeurEcran + 50);
-
-
+            //tuyau = new Tuyau(300, hauteurEcran, largeurEcran + 50);
+            nombreDeMoustique = generateRandomNumber(20, 40);
+            for (int i = 0; i < nombreDeMoustique; i++) {
+                moustique = new Moustique(largeurEcran, hauteurEcran);
+                listDeplacable.add(moustique);
+                listMoustique.add(moustique);
+                point++;
+            }
             for (int i = 0; i < 20; i++) {
                 Nuage nuage = new Nuage(largeurEcran, hauteurEcran);
                 listDeplacable.add(nuage);
                 listSprite.add(nuage);
+
             }
         } else {
-
+            nombreDeMoustique = generateRandomNumber(20, 40);
+            listMoustique = new ArrayList<>();
+            point = 0;
+            for (int i = 0; i < nombreDeMoustique; i++) {
+                moustique = new Moustique(largeurEcran, hauteurEcran);
+                listMoustique.add(moustique);
+                listDeplacable.add(moustique);
+                point++;
+            }
             for (Deplacable deplacable : listDeplacable) {
                 deplacable.reinitialiser(largeurEcran, hauteurEcran);
             }
@@ -107,16 +122,20 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
 
         long indexFrame = 0;
 
-        long point = 0;
 
         initialiser();
 
         Font police = new Font("Calibri", Font.BOLD, 24);
         Font alert = new Font("Calibri", Font.BOLD, 50);
 
+
+        Graphics2D dessin = (Graphics2D) getBufferStrategy().getDrawGraphics();
+        dessin.setFont(alert);
+        textWidth = dessin.getFontMetrics().stringWidth("PAUSE");
+
         while (true) {
             indexFrame++;
-            Graphics2D dessin = (Graphics2D) getBufferStrategy().getDrawGraphics();
+            dessin = (Graphics2D) getBufferStrategy().getDrawGraphics();
 
             //-----------------------------
             //reset dessin
@@ -130,64 +149,72 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
             for (Sprite sprite : listSprite) {
                 sprite.dessiner(dessin, this);
             }
-            tuyau.dessiner(dessin, this);
-
+            for (Moustique moustique1 : listMoustique) {
+                moustique1.dessiner(dessin, this);
+            }
             //affichage HUD
             dessin.setColor(Color.BLACK);
             dessin.setFont(police);
-            dessin.drawString(
-                    String.valueOf(point),
-                    largeurEcran - 100,
-                    50);
+            dessin.drawString("Rest " + String.valueOf(point) + " de Moustique !", largeurEcran - 221, 50);
 
 
-            if (!pause || !perdu) {
+            if (etat == Etat.EN_COURS) {
                 if (oiseau.getY() > hauteurEcran - oiseau.getLargeur()) {
                     // si jamais l oiseau est tombe par terre
-                    System.out.println("perdu");
-                    perdu = true;
-                    pause = true;
+                    //System.out.println("perdu");
+                    etat = Etat.PERDU;
+
                 } else {
-                    point++;
+
                     // sinon si le jeu continu
-                    oiseau.deplacer(largeurEcran, hauteurEcran);
+                    //oiseau.deplacer(largeurEcran, hauteurEcran);
                     tuyau.deplacer(largeurEcran, hauteurEcran);
+                    moustique.deplacer(largeurEcran, hauteurEcran);
                     for (Deplacable deplacable : listDeplacable) {
                         deplacable.deplacer(largeurEcran, hauteurEcran);
                     }
-                    for (Sprite sprite : listSprite) {
 
-                        if (sprite instanceof Oiseau)
-                            oiseau = (Oiseau) sprite;
-                        if (sprite instanceof Tuyau)
-                            tuyau = (Tuyau) sprite;
-
-                        if (Sprite.testCollision(oiseau, tuyau)) {
-                            perdu = true;
-
-                            pause = true;
+                    for (int i = 0; i < listSprite.size(); i++) {
+                        if (listSprite.get(i) instanceof Tuyau) {
+                            if (Sprite.testCollision(oiseau, listSprite.get(i))) {
+                                etat = Etat.PERDU;
+                            }
                         }
                     }
 
+                    for (int i = 0; i < listMoustique.size(); i++) {
 
+                        if (Sprite.testCollision(oiseau, listMoustique.get(i))) {
+                            point--;
+                            listMoustique.remove(i);
+                            if (point == 0) {
+                                etat = Etat.GAGNE;
+                            }
+                        }
+
+                    }
                 }
             } else {
-                dessin.setColor(new Color(0, 0, 0, 0.1f));
+
+                dessin.setColor(new Color(0, 0, 0, 0.5f));
                 dessin.fillRect(0, 0, largeurEcran, hauteurEcran);
-
-
-                if (perdu) {
+                if (etat == Etat.PAUSE) {
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
-                    dessin.drawString(
-                            "<<<<<<<<PRDU>>>>>>>>>",
-                            largeurEcran / 2 - 270,
-                            hauteurEcran / 2);
+
+                    dessin.drawString("PAUSE", largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
+                } else if (etat == Etat.PERDU) {
+                    dessin.setColor(Color.yellow);
+                    dessin.setFont(alert);
+                    dessin.drawString("PERDU", largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
+                } else if (etat == Etat.GAGNE) {
+                    nombreDeMoustique = generateRandomNumber(20, 70);
+                    point = nombreDeMoustique;
+                    dessin.setColor(Color.yellow);
+                    dessin.setFont(alert);
+                    dessin.drawString("GAGNE", largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
                 }
-
-
             }
-
             //-----------------------------
             dessin.dispose();
             getBufferStrategy().show();
@@ -240,7 +267,7 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {
             // inverser un boolean
-            pause = !pause;
+            etat = etat == Etat.PAUSE ? Etat.EN_COURS : Etat.PAUSE;
         }
 
     }

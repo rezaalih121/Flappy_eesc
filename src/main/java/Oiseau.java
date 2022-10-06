@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Oiseau extends Carre implements Deplacable {
 
     protected float vitesseVertical;
-    protected final static int HAUTEUR_OISEAU = 70;
+    protected final static int HAUTEUR_OISEAU = 40;
 
     public Oiseau(int hauteurEcran) {
         super(50, 0, HAUTEUR_OISEAU);

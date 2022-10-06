@@ -1,13 +1,11 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
 
-public class Tuyau extends Rectangle implements Deplacable {
+public class Moustique extends Rectangle implements Deplacable {
 
-    public Tuyau(int hauteur, int hauteurEcran, int largeurEcran) {
-        super(largeurEcran - 100, hauteurEcran - hauteur, 100, hauteur);
+    public Moustique(int hauteurEcran, int largeurEcran) {
+        super(0, 0, 0, 0);
+        reinitialiser(largeurEcran, hauteurEcran);
     }
 
 
@@ -21,16 +19,8 @@ public class Tuyau extends Rectangle implements Deplacable {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
 
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\tuyau" + 3 + ".png");
-        //dessin.fillRect( x, y, largeur, largeur);
-       /* Image img;
-        try {
-            img = ImageIO.read(new File("src/main/java/tuyau.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\mostique.png");
 
-        */
         dessin.drawImage(img, x, y, largeur, hauteur, imageObserver);
     }
 
@@ -48,7 +38,10 @@ public class Tuyau extends Rectangle implements Deplacable {
     }
 
     public void reinitialiser(int largeurEcran, int hauteurEcran) {
-    
-        x = largeurEcran;
+        x = (int) (Math.random() * largeurEcran);
+        y = (int) (Math.random() * (hauteurEcran / 2));
+
+        largeur = (int) (Math.random() * 40 + 10);
+        hauteur = (int) (Math.random() * 40 + 10);
     }
 }
