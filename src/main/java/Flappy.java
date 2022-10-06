@@ -71,7 +71,7 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
             oiseau = new Oiseau(hauteurEcran);
             listDeplacable = new ArrayList<>();
             listMoustique = new ArrayList<>();
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 7; i++) {
 
                 tuyauLargeur = (tuyauLargeur == largeurEcran + i * generateRandomNumber(100, 200)) ? (largeurEcran + i * generateRandomNumber(100, 200)) : (largeurEcran + i * generateRandomNumber(100, 200));
                 tuyauHauteur = (tuyauLargeur == hauteurEcran - i * generateRandomNumber(5, 50)) ? hauteurEcran - i * generateRandomNumber(5, 50) : hauteurEcran - i * generateRandomNumber(5, 50);
@@ -171,6 +171,10 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
                     tuyau.deplacer(largeurEcran, hauteurEcran);
                     moustique.deplacer(largeurEcran, hauteurEcran);
                     for (Deplacable deplacable : listDeplacable) {
+                        deplacable.deplacer(largeurEcran, hauteurEcran);
+                    }
+                    for (Deplacable deplacable : listDeplacable) {
+                        if(listDeplacable.indexOf(deplacable) % 2== 0)
                         deplacable.deplacer(largeurEcran, hauteurEcran);
                     }
 
