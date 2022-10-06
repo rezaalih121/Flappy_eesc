@@ -4,9 +4,10 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.Random;
 
-public class Flappy extends Canvas implements KeyListener, MouseListener, MouseMotionListener {
+public class Flappy extends Canvas implements KeyListener, EventListener, MouseListener, MouseMotionListener,MouseWheelListener {
 
     protected static int largeurEcran = 600;
     protected static int hauteurEcran = 600;
@@ -20,6 +21,9 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
     protected int tuyauHauteur;
     protected int nombreDeMoustique;
     protected int textWidth = 0;
+    protected Toolkit toolkit = Toolkit.getDefaultToolkit();
+    JLabel jLabelBackground = null;
+
     protected ArrayList<Deplacable> listDeplacable = new ArrayList<>();
     protected ArrayList<Sprite> listSprite = new ArrayList<>();
     protected ArrayList<Moustique> listMoustique = new ArrayList<>();
@@ -42,7 +46,8 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
         setBounds(0, 0, largeurEcran, hauteurEcran);
         //On ajoute cette classe (qui hérite de Canvas) comme composant du panneau principal
         panneau.add(this);
-
+        toolkit =  Toolkit.getDefaultToolkit();
+        
         fenetre.pack();
         fenetre.setResizable(false);
         fenetre.setLocationRelativeTo(null);
@@ -50,9 +55,12 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
         fenetre.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         fenetre.requestFocus();
         fenetre.addKeyListener(this);
-        fenetre.addMouseListener(this);
-        fenetre.addMouseMotionListener(this);
 
+        this.addMouseListener(this);
+        this.addMouseMotionListener(this);
+        this.addMouseWheelListener(this);
+
+        
 
         //On indique que le raffraichissement de l'ecran doit être fait manuellement.
         createBufferStrategy(2);
@@ -130,6 +138,7 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
 
 
         Graphics2D dessin = (Graphics2D) getBufferStrategy().getDrawGraphics();
+
         dessin.setFont(alert);
         textWidth = dessin.getFontMetrics().stringWidth("PAUSE");
 
@@ -141,10 +150,11 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
             //reset dessin
             dessin.setColor(Color.WHITE);
             //dessin.fillRect(0, 0, largeurEcran, hauteurEcran);
-            Toolkit t = Toolkit.getDefaultToolkit();
-            Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\background.jpg");
+
+            Image img = toolkit.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\background.jpg");
             dessin.drawImage(img, 0, 0, largeurEcran, hauteurEcran, this);
 
+            
             //oiseau.dessiner(dessin, this);
             for (Sprite sprite : listSprite) {
                 sprite.dessiner(dessin, this);
@@ -275,46 +285,64 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
         }
 
     }
-
+    boolean dragged = false;
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("X: " + e.getX());
-        System.out.println("X: " + e.getXOnScreen());
-        System.out.println("Y: " + e.getY());
-        System.out.println("Y: " + e.getXOnScreen());
-        System.out.println(e.getClickCount());
+        System.out.println("X: " + e.getLocationOnScreen().getX() + "Y: " + e.getLocationOnScreen().getY());
+
+            oiseau.setY(oiseau.getY() - 70);
+
+        
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if( (oiseau.getX() <= e.getX() && oiseau.getX()  <= oiseau.getX()+ 40)  && (oiseau.getY() <= e.getY() && oiseau.getY()  <= oiseau.getY()+ 40) ){
+            dragged = true;
+        }
 
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        System.out.println("X: " + e.getX());
-        System.out.println("X: " + e.getXOnScreen());
-        System.out.println("Y: " + e.getY());
-        System.out.println("Y: " + e.getXOnScreen());
+        dragged = false;
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        System.out.println("Mouse entered");
+
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        System.out.println("Mouse Exited");
+        
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        System.out.println("Mouse Dragged X: " + e.getX() + " Y : " + e.getY());
+        if(dragged)  {
+
+            oiseau.setY(e.getY()-20);
+            oiseau.setX(e.getX()-20);
+        }
+        System.out.println("X: " + e.getX() + "Y: " + e.getY());
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        System.out.println("Mouse Moveed X: " + e.getX() + " Y : " + e.getY());
+        
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+
+        
+        if (e.getWheelRotation() == -1) {
+            oiseau.setY(oiseau.getY() - 40);
+
+        }
+        if (e.getWheelRotation() == 1) {
+            oiseau.setY(oiseau.getY() + 10);
+        }
     }
 }

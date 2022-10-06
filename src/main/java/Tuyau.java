@@ -6,8 +6,10 @@ import java.io.IOException;
 
 public class Tuyau extends Rectangle implements Deplacable {
 
-    public Tuyau(int hauteur, int hauteurEcran, int largeurEcran) {
+    public Tuyau(int hauteur,  int hauteurEcran, int largeurEcran) {
         super(largeurEcran - 100, hauteurEcran - hauteur, 100, hauteur);
+        int colorNomero = (int) (Math.random() * 4);
+        this.couleur =  colorNomero == 1?  Color.GREEN  : colorNomero == 2  ?  couleur.GRAY : colorNomero == 3   ? couleur.RED : couleur.BLUE ;
     }
 
 
@@ -21,7 +23,7 @@ public class Tuyau extends Rectangle implements Deplacable {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
 
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\tuyau" + 3 + ".png");
+        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\tuyau" + (couleur == Color.GREEN?  1  : couleur == couleur.GRAY  ? 2 : couleur == couleur.RED  ? 3 : 4 ) + ".png");
         //dessin.fillRect( x, y, largeur, largeur);
        /* Image img;
         try {
@@ -48,7 +50,7 @@ public class Tuyau extends Rectangle implements Deplacable {
     }
 
     public void reinitialiser(int largeurEcran, int hauteurEcran) {
-    
+
         x = largeurEcran;
     }
 }
