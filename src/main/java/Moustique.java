@@ -41,7 +41,7 @@ public class Moustique extends Rectangle implements Deplacable {
         x = (int) (Math.random() * largeurEcran);
         y = (int) (Math.random() * (hauteurEcran / 2));
 
-        largeur = (int) (Math.random() * 40 + 10);
+        largeur = (int) (Math.random() * 80 + 10);
         hauteur = (int) (Math.random() * 40 + 10);
     }
 }
