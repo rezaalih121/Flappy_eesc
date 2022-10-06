@@ -1,6 +1,8 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.IOException;
 
 public class Oiseau extends Carre implements Deplacable {
 
@@ -58,7 +60,6 @@ public class Oiseau extends Carre implements Deplacable {
         }
     }
 
-
     public void sauter() {
         vitesseVertical = 2;
     }
@@ -66,7 +67,7 @@ public class Oiseau extends Carre implements Deplacable {
     public void dessiner(Graphics2D dessin) {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\java" + File.separator + "bird.png");
+
         dessin.fillRect(x, y, largeur, largeur);
     }
 
@@ -74,9 +75,17 @@ public class Oiseau extends Carre implements Deplacable {
     public void dessiner(Graphics2D dessin, ImageObserver imageObserver) {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\java" + File.separator + "bird.png");
-        //dessin.fillRect( x, y, largeur, largeur);
-        dessin.drawImage(img, x, y, largeur, largeur, imageObserver);
+        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\bird.png");
+        /*Image img;
+        try {
+            img = ImageIO.read(new File("src/main/java/bird.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        */
+
+        dessin.drawImage(img, x, y, largeur, largeur, null);
     }
+
 
 }

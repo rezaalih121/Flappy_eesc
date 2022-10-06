@@ -40,7 +40,14 @@ public abstract class Carre extends Sprite {
 
     @Override
     public boolean collision(Sprite sprite) {
-        if (sprite instanceof Carre) {
+        if (sprite instanceof Rectangle) {
+            Rectangle rectangle = (Rectangle) sprite;
+
+            return this.collision(rectangle.getX(), rectangle.getY())
+                    || this.collision(rectangle.getX() + rectangle.getLargeur(), rectangle.getY())
+                    || this.collision(rectangle.getX(), rectangle.getY() + rectangle.getHauteur())
+                    || this.collision(rectangle.getX() + rectangle.getLargeur(), rectangle.getY() + rectangle.getHauteur());
+        } else if (sprite instanceof Carre) {
             Carre carre = (Carre) sprite;
 
             return this.collision(carre.getX(), carre.getY())

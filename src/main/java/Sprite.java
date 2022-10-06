@@ -52,4 +52,10 @@ public abstract class Sprite {
     public abstract int getCentreX();
 
     public abstract int getCentreY();
+
+    public static boolean testCollision(Sprite sprite1, Sprite sprite2) {
+
+        return sprite1.collision(sprite2) || sprite2.collision(sprite1);
+
+    }
 }

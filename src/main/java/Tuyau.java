@@ -1,12 +1,13 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.IOException;
 
 public class Tuyau extends Rectangle implements Deplacable {
 
     public Tuyau(int hauteur, int hauteurEcran, int largeurEcran) {
         super(largeurEcran - 100, hauteurEcran - hauteur, 100, hauteur);
-
     }
 
 
@@ -19,9 +20,18 @@ public class Tuyau extends Rectangle implements Deplacable {
     public void dessiner(Graphics2D dessin, ImageObserver imageObserver) {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\java" + File.separator + "tuyau.png");
+
+        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\tuyau" + 3 + ".png");
         //dessin.fillRect( x, y, largeur, largeur);
-        dessin.drawImage(img, x, y, largeur, hauteur, imageObserver);
+       /* Image img;
+        try {
+            img = ImageIO.read(new File("src/main/java/tuyau.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        */
+        dessin.drawImage(img, x, y, largeur, hauteur, null);
     }
 
     @Override
