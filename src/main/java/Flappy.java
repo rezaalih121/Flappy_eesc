@@ -142,7 +142,7 @@ public class Flappy extends Canvas implements KeyListener, MouseListener, MouseM
             dessin.setColor(Color.WHITE);
             //dessin.fillRect(0, 0, largeurEcran, hauteurEcran);
             Toolkit t = Toolkit.getDefaultToolkit();
-            Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\backgrond1.png");
+            Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\background.jpg");
             dessin.drawImage(img, 0, 0, largeurEcran, hauteurEcran, this);
 
             //oiseau.dessiner(dessin, this);
