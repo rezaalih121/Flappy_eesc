@@ -82,7 +82,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             for (int i = 0; i < 7; i++) {
 
                 tuyauLargeur = (tuyauLargeur == largeurEcran + i * generateRandomNumber(100, 200)) ? (largeurEcran + i * generateRandomNumber(100, 200)) : (largeurEcran + i * generateRandomNumber(100, 200));
-                tuyauHauteur = (tuyauLargeur == hauteurEcran - i * generateRandomNumber(5, 50)) ? hauteurEcran - i * generateRandomNumber(5, 50) : hauteurEcran - i * generateRandomNumber(5, 50);
+                //tuyauHauteur = (tuyauLargeur == hauteurEcran - i * generateRandomNumber(5, 50)) ? hauteurEcran - i * generateRandomNumber(5, 50) : hauteurEcran - i * generateRandomNumber(5, 50);
 
                 tuyau = new Tuyau(121 + generateRandomNumber(70, 200), hauteurEcran, tuyauLargeur);
                 listDeplacable.add(tuyau);
@@ -102,7 +102,13 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 listMoustique.add(moustique);
                 point++;
             }
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 7; i++) {
+                OiseauMechant oiseauMechant = new OiseauMechant(largeurEcran, hauteurEcran);
+                listDeplacable.add(oiseauMechant);
+                listSprite.add(oiseauMechant);
+
+            }
+            for (int i = 0; i < 10; i++) {
                 Nuage nuage = new Nuage(largeurEcran, hauteurEcran);
                 listDeplacable.add(nuage);
                 listSprite.add(nuage);
@@ -119,6 +125,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 point++;
             }
             for (Deplacable deplacable : listDeplacable) {
+
                 deplacable.reinitialiser(largeurEcran, hauteurEcran);
             }
 
@@ -180,16 +187,18 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     //oiseau.deplacer(largeurEcran, hauteurEcran);
                     tuyau.deplacer(largeurEcran, hauteurEcran);
                     moustique.deplacer(largeurEcran, hauteurEcran);
-                    for (Deplacable deplacable : listDeplacable) {
-                        deplacable.deplacer(largeurEcran, hauteurEcran);
-                    }
-                    for (Deplacable deplacable : listDeplacable) {
-                        if(listDeplacable.indexOf(deplacable) % 2== 0)
-                        deplacable.deplacer(largeurEcran, hauteurEcran);
-                    }
 
+                    
+                    for (Deplacable deplacable : listDeplacable) {
+                        if(listDeplacable.indexOf(deplacable) % 2 != 0)
+                            deplacable.deplacer(largeurEcran, hauteurEcran);
+                            deplacable.deplacer(largeurEcran, hauteurEcran);
+                    }
+                    for (Deplacable deplacable : listDeplacable) {
+                        deplacable.deplacer(largeurEcran, hauteurEcran);
+                    }
                     for (int i = 0; i < listSprite.size(); i++) {
-                        if (listSprite.get(i) instanceof Tuyau) {
+                        if (listSprite.get(i) instanceof Tuyau || listSprite.get(i) instanceof  OiseauMechant) {
                             if (Sprite.testCollision(oiseau, listSprite.get(i))) {
                                 etat = Etat.PERDU;
                             }
