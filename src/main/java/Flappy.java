@@ -1,16 +1,21 @@
 import javax.management.monitor.MonitorSettingException;
+import javax.print.attribute.standard.Media;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.Random;
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.*;
 
-public class Flappy extends Canvas implements KeyListener, EventListener, MouseListener, MouseMotionListener,MouseWheelListener {
+public class Flappy extends Canvas implements KeyListener, EventListener, MouseListener, MouseMotionListener, MouseWheelListener, ComponentListener, WindowListener {
 
     protected static int largeurEcran = 600;
     protected static int hauteurEcran = 600;
+
+    protected boolean windowsResized = false;
 
     protected Oiseau oiseau;
     protected Tuyau tuyau;
@@ -32,13 +37,40 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     protected Etat etat = Etat.EN_COURS;
 
+    protected JDialog welcomeDialog;
+
+
+    //loading locale language
+    private static final int DEFAULT_LOCALE = 0;
+    private ResourceBundle bundle;
+    public static Locale locale;
+    public static final Locale[] supportedLocales = {
+            new Locale("en", "US"),
+            new Locale("fr", "FR")
+    };
 
     public static int generateRandomNumber(int from, int to) {
         return RANDOMISER.nextInt((to + 1) - from) + from;
     }
 
     public Flappy() throws InterruptedException {
-        JFrame fenetre = new JFrame("Flappy");
+        //loading locale language
+        for (Locale locale1 : supportedLocales) {
+            if (locale1.getLanguage().equals(Locale.getDefault().getLanguage())) {
+                //System.out.println(locale1.toString());
+                locale = locale1;
+                break;
+            } else {
+                locale = supportedLocales[DEFAULT_LOCALE];
+                //System.out.println(locale1.toString());
+            }
+        }
+
+        bundle = ResourceBundle.getBundle("LanguageResource", locale);
+        System.out.println(bundle.getString("userInfoMenu"));
+
+
+        JFrame fenetre = new JFrame(bundle.getString("windowsTitle"));
         //On récupère le panneau de la fenetre principale
         JPanel panneau = (JPanel) fenetre.getContentPane();
         //On définie la hauteur / largeur de l'écran
@@ -46,21 +78,151 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         setBounds(0, 0, largeurEcran, hauteurEcran);
         //On ajoute cette classe (qui hérite de Canvas) comme composant du panneau principal
         panneau.add(this);
-        toolkit =  Toolkit.getDefaultToolkit();
-        
+        toolkit = Toolkit.getDefaultToolkit();
+        JMenuBar jMenuBar = new JMenuBar();
+        JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
+
+
+        JMenu jMenuSetting = new JMenu(bundle.getString("settingLabel"));
+
+
+        JMenu jMenuHelp = new JMenu(bundle.getString("helpMenu"));
+        jMenuHelp.addActionListener(e -> {
+            System.out.println("hgr");
+            welcomeDialog.setVisible(true);
+            welcomeDialog.setFocusableWindowState(true);
+        });
+
+
+        JMenu jMenuLanguage = new JMenu(bundle.getString("languageMenu") + " : " + locale.getDisplayLanguage());
+        JMenuItem jMenuItemEn = new JMenuItem(supportedLocales[0].getDisplayLanguage());
+        JMenuItem jMenuItemFr = new JMenuItem(supportedLocales[1].getDisplayLanguage());
+        jMenuItemFr.addActionListener(e -> {
+            //System.out.println(locale.getDisplayLanguage());
+            locale = supportedLocales[1];
+            bundle = ResourceBundle.getBundle("LanguageResource", locale);
+
+            //System.out.println("FR : "+bundle.getLocale().getDisplayLanguage());
+
+            jMenuLanguage.setText(bundle.getString("languageMenu") + " : " + locale.getDisplayLanguage());
+            jMenuUserInfo.setText(bundle.getString("userInfoMenu"));
+            jMenuSetting.setText(bundle.getString("settingLabel"));
+            jMenuHelp.setText(bundle.getString("helpMenu"));
+            fenetre.setTitle(bundle.getString("windowsTitle"));
+
+        });
+        jMenuItemEn.addActionListener(e -> {
+            //System.out.println(locale.getDisplayLanguage());
+            locale = supportedLocales[DEFAULT_LOCALE];
+            bundle = ResourceBundle.getBundle("LanguageResource", locale);
+
+            //System.out.println("EN : "+bundle.getLocale().getDisplayLanguage());
+
+            jMenuLanguage.setText(bundle.getString("languageMenu") + " : " + locale.getDisplayLanguage());
+            jMenuUserInfo.setText(bundle.getString("userInfoMenu"));
+            jMenuSetting.setText(bundle.getString("settingLabel"));
+            jMenuHelp.setText(bundle.getString("helpMenu"));
+            fenetre.setTitle(bundle.getString("windowsTitle"));
+
+        });
+
+
+        jMenuLanguage.add(jMenuItemFr);
+        jMenuLanguage.add(jMenuItemEn);
+
+        jMenuBar.add(jMenuUserInfo);
+        jMenuBar.add(jMenuSetting);
+        jMenuBar.add(jMenuHelp);
+        jMenuBar.add(Box.createHorizontalGlue());
+        jMenuBar.add(jMenuLanguage);
+        jMenuBar.setVisible(true);
+        fenetre.setJMenuBar(jMenuBar);
+
+        welcomeDialog = new JDialog(fenetre, bundle.getString("welcomeLabel"));
+        JLabel welcomeLabel = new JLabel(bundle.getString("welcomeUserLabel"));
+        JLabel loginLabel = new JLabel(bundle.getString("userNameLabel"));
+        JLabel loginMessageLabel = new JLabel();
+        loginMessageLabel.setBackground(Color.yellow);
+
+        JTextField loginTextField = new JTextField();
+        loginTextField.setSize(121, 20);
+        loginTextField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                String value = loginTextField.getText();
+                int l = value.length();
+
+                if (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'z' || e.getKeyChar() >= 'A' && e.getKeyChar() <= 'Z' || e.getKeyCode() == 8) {
+                    loginTextField.setEditable(true);
+                    loginMessageLabel.setText(bundle.getString("welcomeUserLabel") + "");
+
+                } else {
+                    loginTextField.setEditable(false);
+                    loginMessageLabel.setText(bundle.getString("welcomeMessageLabel"));
+                    loginTextField.setFocusable(true);
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        loginLabel.setLabelFor(loginTextField);
+        JButton loginButton = new JButton(bundle.getString("loginButton"));
+        loginButton.addActionListener(e -> {
+            System.out.println("loginTextField : " + loginTextField.getText());
+        });
+
+        GridLayout gridLayout = new GridLayout(3, 1);
+        gridLayout.setHgap(40);
+        gridLayout.setVgap(40);
+
+        welcomeDialog.setLayout(gridLayout);
+        welcomeDialog.add(welcomeLabel, JLabel.CENTER);
+        loginLabel.setSize(400, 100);
+
+
+        JPanel jPanelWelcomeDialog = new JPanel();
+        jPanelWelcomeDialog.setLayout(new GridLayout(1, 3));
+
+
+        jPanelWelcomeDialog.add(loginLabel);
+        jPanelWelcomeDialog.add(loginTextField);
+        jPanelWelcomeDialog.add(loginButton);
+
+
+        welcomeDialog.add(jPanelWelcomeDialog);
+        welcomeDialog.add(loginMessageLabel);
+        welcomeDialog.setVisible(false);
+        welcomeDialog.setFocusableWindowState(true);
+        welcomeDialog.setSize(400, 200);
+        welcomeDialog.setResizable(false);
+        welcomeDialog.setLocationRelativeTo(fenetre);
+
+
         fenetre.pack();
-        fenetre.setResizable(false);
+        fenetre.setResizable(true);
         fenetre.setLocationRelativeTo(null);
         fenetre.setVisible(true);
         fenetre.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         fenetre.requestFocus();
         fenetre.addKeyListener(this);
+        fenetre.addWindowListener(this);
+        Image img = toolkit.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\bird.png");
+        fenetre.setIconImage(img);
 
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
+        this.addComponentListener(this);
 
-        
 
         //On indique que le raffraichissement de l'ecran doit être fait manuellement.
         createBufferStrategy(2);
@@ -71,14 +233,42 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         demarrer();
     }
 
+    private void initComponents() {
+
+
+    }
+
+    void playSound(String soundFile) {
+        File f = new File("src/main/resources/bk_island_ambience_02.wav" + soundFile);
+        AudioInputStream audioIn = null;
+        try {
+            audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+
+            Clip clip = null;
+
+            clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.loop(1);//Clip.LOOP_CONTINUOUSLY);
+        } catch (LineUnavailableException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedAudioFileException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void initialiser() {
+        playSound("");
         // Si cest la premiere initialisation
         etat = Etat.EN_COURS;
-
-        if (oiseau == null) {
+        point = 0;
+        if (oiseau == null || windowsResized) {
             oiseau = new Oiseau(hauteurEcran);
             listDeplacable = new ArrayList<>();
             listMoustique = new ArrayList<>();
+            listSprite = new ArrayList<>();
+
             for (int i = 0; i < 7; i++) {
 
                 tuyauLargeur = (tuyauLargeur == largeurEcran + i * generateRandomNumber(100, 200)) ? (largeurEcran + i * generateRandomNumber(100, 200)) : (largeurEcran + i * generateRandomNumber(100, 200));
@@ -95,14 +285,14 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             listSprite.add(oiseau);
 
             //tuyau = new Tuyau(300, hauteurEcran, largeurEcran + 50);
-            nombreDeMoustique = generateRandomNumber(20, 40);
+            nombreDeMoustique = generateRandomNumber(20, 30);
             for (int i = 0; i < nombreDeMoustique; i++) {
                 moustique = new Moustique(largeurEcran, hauteurEcran);
                 listDeplacable.add(moustique);
                 listMoustique.add(moustique);
                 point++;
             }
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 3; i++) {
                 OiseauMechant oiseauMechant = new OiseauMechant(largeurEcran, hauteurEcran);
                 listDeplacable.add(oiseauMechant);
                 listSprite.add(oiseauMechant);
@@ -115,7 +305,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
             }
         } else {
-            nombreDeMoustique = generateRandomNumber(20, 40);
+            nombreDeMoustique = generateRandomNumber(20, 30);
             listMoustique = new ArrayList<>();
             point = 0;
             for (int i = 0; i < nombreDeMoustique; i++) {
@@ -161,7 +351,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             Image img = toolkit.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\background.jpg");
             dessin.drawImage(img, 0, 0, largeurEcran, hauteurEcran, this);
 
-            
+
             //oiseau.dessiner(dessin, this);
             for (Sprite sprite : listSprite) {
                 sprite.dessiner(dessin, this);
@@ -172,7 +362,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             //affichage HUD
             dessin.setColor(Color.BLACK);
             dessin.setFont(police);
-            dessin.drawString("Rest " + String.valueOf(point) + " de Moustique !", largeurEcran - 221, 50);
+            dessin.drawString(MessageFormat.format(bundle.getString("mosquitosNumberLabel"), point), largeurEcran - 221, 50);
 
 
             if (etat == Etat.EN_COURS) {
@@ -188,17 +378,17 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     tuyau.deplacer(largeurEcran, hauteurEcran);
                     moustique.deplacer(largeurEcran, hauteurEcran);
 
-                    
+
                     for (Deplacable deplacable : listDeplacable) {
-                        if(listDeplacable.indexOf(deplacable) % 2 != 0)
+                        if (listDeplacable.indexOf(deplacable) % 2 != 0)
                             deplacable.deplacer(largeurEcran, hauteurEcran);
-                            deplacable.deplacer(largeurEcran, hauteurEcran);
+                        //deplacable.deplacer(largeurEcran, hauteurEcran);
                     }
                     for (Deplacable deplacable : listDeplacable) {
                         deplacable.deplacer(largeurEcran, hauteurEcran);
                     }
                     for (int i = 0; i < listSprite.size(); i++) {
-                        if (listSprite.get(i) instanceof Tuyau || listSprite.get(i) instanceof  OiseauMechant) {
+                        if (listSprite.get(i) instanceof Tuyau || listSprite.get(i) instanceof OiseauMechant) {
                             if (Sprite.testCollision(oiseau, listSprite.get(i))) {
                                 etat = Etat.PERDU;
                             }
@@ -225,17 +415,17 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
 
-                    dessin.drawString("PAUSE", largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
+                    dessin.drawString(bundle.getString("pauseLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
                 } else if (etat == Etat.PERDU) {
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
-                    dessin.drawString("PERDU", largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
+                    dessin.drawString(bundle.getString("lostLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
                 } else if (etat == Etat.GAGNE) {
-                    nombreDeMoustique = generateRandomNumber(20, 70);
+                    nombreDeMoustique = generateRandomNumber(20, 30);
                     point = nombreDeMoustique;
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
-                    dessin.drawString("GAGNE", largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
+                    dessin.drawString(bundle.getString("wonLebel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
                 }
             }
             //-----------------------------
@@ -256,27 +446,21 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println(e.getKeyCode());
         if (e.getKeyCode() == 39) {
-            // inverser un boolean
             oiseau.setX(oiseau.getX() + 10);
-            System.out.println("go right");
+            //System.out.println("go right");
         }
         if (e.getKeyCode() == 37) {
-            // inverser un boolean
             oiseau.setX(oiseau.getX() - 10);
-            System.out.println("go left");
+            //System.out.println("go left");
         }
         if (e.getKeyCode() == 38) {
-            // inverser un boolean
-
             oiseau.setY(oiseau.getY() - 30);
-            System.out.println("go up");
+            //System.out.println("go up");
         }
         if (e.getKeyCode() == 40) {
-            // inverser un boolean
             oiseau.setY(oiseau.getY() + 10);
-            System.out.println("go down");
+            //System.out.println("go down");
         }
     }
 
@@ -289,27 +473,24 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             initialiser();
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {
-            // inverser un boolean
             etat = etat == Etat.PAUSE ? Etat.EN_COURS : Etat.PAUSE;
         }
 
     }
+
     boolean dragged = false;
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("X: " + e.getLocationOnScreen().getX() + "Y: " + e.getLocationOnScreen().getY());
-
-            oiseau.setY(oiseau.getY() - 70);
-
-        
+        //System.out.println("X: " + e.getLocationOnScreen().getX() + "Y: " + e.getLocationOnScreen().getY());
+        oiseau.setY(oiseau.getY() - 70);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if( (oiseau.getX() <= e.getX() && oiseau.getX()  <= oiseau.getX()+ 40)  && (oiseau.getY() <= e.getY() && oiseau.getY()  <= oiseau.getY()+ 40) ){
+        if ((oiseau.getX() <= e.getX() && oiseau.getX() <= oiseau.getX() + 40) && (oiseau.getY() <= e.getY() && oiseau.getY() <= oiseau.getY() + 40)) {
             dragged = true;
         }
-
     }
 
     @Override
@@ -324,28 +505,25 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     @Override
     public void mouseExited(MouseEvent e) {
-        
+
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(dragged)  {
-
-            oiseau.setY(e.getY()-20);
-            oiseau.setX(e.getX()-20);
+        if (dragged) {
+            oiseau.setY(e.getY() - 20);
+            oiseau.setX(e.getX() - 20);
         }
-        System.out.println("X: " + e.getX() + "Y: " + e.getY());
+        //System.out.println("X: " + e.getX() + "Y: " + e.getY());
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        
+
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-
-        
         if (e.getWheelRotation() == -1) {
             oiseau.setY(oiseau.getY() - 40);
 
@@ -353,5 +531,67 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         if (e.getWheelRotation() == 1) {
             oiseau.setY(oiseau.getY() + 10);
         }
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        //System.out.println("reinitializer");
+        largeurEcran = this.getWidth();
+        hauteurEcran = this.getHeight();
+        windowsResized = true;
+        initialiser();
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+        System.out.println("opened");
+        welcomeDialog.setModal(true);
+        welcomeDialog.setVisible(true);
+        welcomeDialog.setFocusableWindowState(true);
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 }

@@ -23,7 +23,12 @@ public class OiseauMechant extends Rectangle implements Deplacable {
         if (x < -largeur)
             reinitialiser(largeurEcran, hauteurEcran);
 
-       
+       /* if(y > hauteurEcran / 2)
+            y = y-(int) (Math.random() * hauteurEcran / 2);
+        else if(y == 0)
+            y = y + (int) (Math.random() * hauteurEcran / 2);
+        else
+            y = y+(int) (Math.random() * hauteurEcran / 2);*/
     }
 
 

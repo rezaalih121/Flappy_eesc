@@ -15,7 +15,9 @@ public class Nuage extends Rectangle implements Deplacable {
         Toolkit t = Toolkit.getDefaultToolkit();
         Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\cloud.png");
         //dessin.fillRect( x, y, largeur, largeur);
+        dessin.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.90f));
         dessin.drawImage(img, x, y, largeur, hauteur, imageObserver);
+        dessin.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
     }
 
 
