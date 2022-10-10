@@ -1,17 +1,25 @@
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.management.monitor.MonitorSettingException;
 import javax.print.attribute.standard.Media;
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Time;
 import java.text.MessageFormat;
 import java.util.*;
 
 public class Flappy extends Canvas implements KeyListener, EventListener, MouseListener, MouseMotionListener, MouseWheelListener, ComponentListener, WindowListener {
 
+    protected User curentUser;
     protected static int largeurEcran = 600;
     protected static int hauteurEcran = 600;
 
@@ -25,6 +33,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     protected long point = 0;
     protected int tuyauHauteur;
     protected int nombreDeMoustique;
+    protected int nombreDeMechantOiseau;
+    protected int nombreDeNuage;
     protected int textWidth = 0;
     protected Toolkit toolkit = Toolkit.getDefaultToolkit();
     JLabel jLabelBackground = null;
@@ -35,10 +45,13 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     private static final Random RANDOMISER = new Random();
 
-    protected Etat etat = Etat.EN_COURS;
+    protected Etat etat = Etat.PAUSE;
 
-    protected JDialog welcomeDialog;
+    protected JDialog welcomeDialog , userInfoDialog , settingDialog;
 
+    protected XmlDbFileHandler xmlDbFileHandler;
+    protected Image backgroundImage;
+    protected String filesPath = System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\";
 
     //loading locale language
     private static final int DEFAULT_LOCALE = 0;
@@ -53,7 +66,59 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         return RANDOMISER.nextInt((to + 1) - from) + from;
     }
 
+    public void setWindowsTheme(int theme) {
+        try {
+            if (theme == 0) {
+                UIManager.setLookAndFeel(new FlatLightLaf());
+                toolkit = Toolkit.getDefaultToolkit();
+                backgroundImage = toolkit.getImage(filesPath + "background.jpg");
+            } else if(theme == 1) {
+                UIManager.setLookAndFeel( new FlatDarculaLaf());
+                toolkit = Toolkit.getDefaultToolkit();
+                backgroundImage = toolkit.getImage(filesPath + "NightBackground.jpg");
+
+            }else if (theme == 2) {
+                UIManager.setLookAndFeel( new FlatDarculaLaf());
+                toolkit = Toolkit.getDefaultToolkit();
+                backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
+
+            }
+
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch( Exception ex ) {
+            System.err.println( "Failed to initialize LaF" );
+        }
+    }
+    public void setGameLevel(int level) {
+        try {
+            if (level == 0) {
+                UIManager.setLookAndFeel(new FlatLightLaf());
+                toolkit = Toolkit.getDefaultToolkit();
+                backgroundImage = toolkit.getImage(filesPath + "background.jpg");
+            } else if(level == 1) {
+                UIManager.setLookAndFeel( new FlatDarculaLaf());
+                toolkit = Toolkit.getDefaultToolkit();
+                backgroundImage = toolkit.getImage(filesPath + "NightBackground.jpg");
+
+            }else if (level == 2) {
+                UIManager.setLookAndFeel( new FlatDarculaLaf());
+                toolkit = Toolkit.getDefaultToolkit();
+                backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
+
+            } else if (level == 2) {
+                UIManager.setLookAndFeel( new FlatDarculaLaf());
+                toolkit = Toolkit.getDefaultToolkit();
+                backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
+
+            }
+
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch( Exception ex ) {
+            System.err.println( "Failed to initialize LaF" );
+        }
+    }
     public Flappy() throws InterruptedException {
+        FlatDarkLaf.setup();
         //loading locale language
         for (Locale locale1 : supportedLocales) {
             if (locale1.getLanguage().equals(Locale.getDefault().getLanguage())) {
@@ -67,8 +132,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         }
 
         bundle = ResourceBundle.getBundle("LanguageResource", locale);
-        System.out.println(bundle.getString("userInfoMenu"));
 
+        xmlDbFileHandler = new XmlDbFileHandler(bundle);
 
         JFrame fenetre = new JFrame(bundle.getString("windowsTitle"));
         //On récupère le panneau de la fenetre principale
@@ -79,18 +144,142 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         //On ajoute cette classe (qui hérite de Canvas) comme composant du panneau principal
         panneau.add(this);
         toolkit = Toolkit.getDefaultToolkit();
-        JMenuBar jMenuBar = new JMenuBar();
-        JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
+        backgroundImage = toolkit.getImage(filesPath + "background.jpg");
+        Image img = toolkit.getImage(filesPath + "bird.png");
+        GridLayout gridLayout = new GridLayout(3, 1);
+      
 
+        JMenuBar jMenuBar = new JMenuBar();
+
+
+        userInfoDialog = new JDialog(fenetre, bundle.getString("userInfoMenu"));
+        userInfoDialog.setVisible(false);
+        userInfoDialog.setFocusableWindowState(true);
+        userInfoDialog.setSize(500, 500);
+        userInfoDialog.setResizable(false);
+        userInfoDialog.setLocationRelativeTo(fenetre);
+        userInfoDialog.setLayout(gridLayout);
+
+
+        JLabel userInfoLabel = new JLabel();
+        userInfoDialog.add( userInfoLabel);
+        JScrollPane jScrollPaneTable = new JScrollPane();
+        jScrollPaneTable.setSize(500 , 300);
+        jScrollPaneTable.setVerticalScrollBar(new JScrollBar());
+        jScrollPaneTable.setHorizontalScrollBar(new JScrollBar());
+        jScrollPaneTable.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jScrollPaneTable.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        TableHandler tableHandler = new TableHandler(curentUser,bundle);
+        jScrollPaneTable.add(tableHandler.getTable(curentUser,bundle));
+
+        userInfoDialog.add(jScrollPaneTable);
+
+        JButton deleteUserInfoButton = new JButton(bundle.getString("deleteUser"));
+        deleteUserInfoButton.addActionListener(e ->{
+            curentUser.deleteUserHistoriesList();
+            xmlDbFileHandler.deleteUserGameHistory(curentUser);
+
+            tableHandler.getTable(curentUser,bundle);
+        });
+        userInfoDialog.add(deleteUserInfoButton);
+        JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
+        jMenuUserInfo.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tableHandler.getTable(curentUser,bundle);
+                userInfoDialog.setVisible(true);
+                tableHandler.repaint();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
         JMenu jMenuSetting = new JMenu(bundle.getString("settingLabel"));
 
+        JMenu jMenuItemTheme = new JMenu(bundle.getString("themeLabel"));
+        jMenuItemTheme.setMnemonic(KeyEvent.VK_S);
+        for (int i = 0; i < bundle.getStringArray("themeList").length; i++) {
+            JMenuItem jSubMenuTheme = new JMenuItem(bundle.getStringArray("themeList")[i]);
+            int finalI = i;
+            jSubMenuTheme.addActionListener(e -> {
+                setWindowsTheme(finalI);
+            });
+            jMenuItemTheme.add( jSubMenuTheme);
+        }
+
+        jMenuSetting.add(jMenuItemTheme);
+
+        jMenuSetting.addSeparator();
+
+        JMenu jMenuItemLevel = new JMenu(bundle.getString("levelLabel"));
+        jMenuItemTheme.setMnemonic(KeyEvent.VK_S);
+        for (int i = 0; i < bundle.getStringArray("gameLevelList").length; i++) {
+            JMenuItem jSubMenuLevel = new JMenuItem(bundle.getStringArray("gameLevelList")[i]);
+            int finalI = i;
+            jSubMenuLevel.addActionListener(e -> {
+                setGameLevel(finalI);
+            });
+            jMenuItemLevel.add( jSubMenuLevel);
+        }
+
+        jMenuSetting.add(jMenuItemLevel);
+
 
         JMenu jMenuHelp = new JMenu(bundle.getString("helpMenu"));
-        jMenuHelp.addActionListener(e -> {
-            System.out.println("hgr");
-            welcomeDialog.setVisible(true);
-            welcomeDialog.setFocusableWindowState(true);
+        jMenuHelp.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(
+                        fenetre,
+
+                        bundle.getString("controlKeys") + "\n" +
+                                bundle.getString("jumpKeyLabel") + "\n" +
+                                bundle.getString("resetKeyLabel") + "\n" +
+                                bundle.getString("mouseDragLabel") + "\n" +
+                                bundle.getString("mouseWheelLabel") + "\n" +
+                                bundle.getString("arrowsKeysLabel") + "\n",
+                        bundle.getString("helpMenu"),JOptionPane.INFORMATION_MESSAGE
+
+                );
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
         });
 
 
@@ -140,8 +329,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
         welcomeDialog = new JDialog(fenetre, bundle.getString("welcomeLabel"));
         JLabel welcomeLabel = new JLabel(bundle.getString("welcomeUserLabel"));
+        welcomeLabel.setFont(new Font("Calibri", Font.BOLD, 14));
         JLabel loginLabel = new JLabel(bundle.getString("userNameLabel"));
         JLabel loginMessageLabel = new JLabel();
+
         loginMessageLabel.setBackground(Color.yellow);
 
         JTextField loginTextField = new JTextField();
@@ -177,25 +368,39 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         loginLabel.setLabelFor(loginTextField);
         JButton loginButton = new JButton(bundle.getString("loginButton"));
         loginButton.addActionListener(e -> {
-            System.out.println("loginTextField : " + loginTextField.getText());
+
+            if(loginTextField.getText().length()>0){
+                etat = Etat.EN_COURS;
+
+                curentUser = xmlDbFileHandler.getUserFromXmlFile(loginTextField.getText());
+                userInfoLabel.setText(bundle.getString("userNameLabel" )+ " : " + curentUser.getUserName());
+                initialiser();
+                welcomeDialog.setVisible(false);
+            }else{
+                JOptionPane.showMessageDialog(welcomeDialog,bundle.getString("welcomeUserLabel"),bundle.getString("welcomeUserLabel"),JOptionPane.CLOSED_OPTION);
+            }
+
+
         });
 
-        GridLayout gridLayout = new GridLayout(3, 1);
-        gridLayout.setHgap(40);
-        gridLayout.setVgap(40);
+
+
 
         welcomeDialog.setLayout(gridLayout);
-        welcomeDialog.add(welcomeLabel, JLabel.CENTER);
-        loginLabel.setSize(400, 100);
+        welcomeDialog.setIconImage(img);
+        welcomeDialog.add(welcomeLabel, CENTER_ALIGNMENT);
+        loginLabel.setSize(400, 70);
 
 
         JPanel jPanelWelcomeDialog = new JPanel();
         jPanelWelcomeDialog.setLayout(new GridLayout(1, 3));
 
 
-        jPanelWelcomeDialog.add(loginLabel);
-        jPanelWelcomeDialog.add(loginTextField);
+
+        jPanelWelcomeDialog.add(loginLabel, RIGHT_ALIGNMENT);
+        jPanelWelcomeDialog.add(loginTextField, LEFT_ALIGNMENT);
         jPanelWelcomeDialog.add(loginButton);
+        jPanelWelcomeDialog.setAlignmentX(CENTER_ALIGNMENT);
 
 
         welcomeDialog.add(jPanelWelcomeDialog);
@@ -215,7 +420,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         fenetre.requestFocus();
         fenetre.addKeyListener(this);
         fenetre.addWindowListener(this);
-        Image img = toolkit.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\bird.png");
         fenetre.setIconImage(img);
 
         this.addMouseListener(this);
@@ -329,7 +533,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
 
         initialiser();
-
+        etat = Etat.PAUSE;
         Font police = new Font("Calibri", Font.BOLD, 24);
         Font alert = new Font("Calibri", Font.BOLD, 50);
 
@@ -348,8 +552,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             dessin.setColor(Color.WHITE);
             //dessin.fillRect(0, 0, largeurEcran, hauteurEcran);
 
-            Image img = toolkit.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\background.jpg");
-            dessin.drawImage(img, 0, 0, largeurEcran, hauteurEcran, this);
+            dessin.drawImage(backgroundImage, 0, 0, largeurEcran, hauteurEcran, this);
 
 
             //oiseau.dessiner(dessin, this);
@@ -417,6 +620,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
                     dessin.drawString(bundle.getString("pauseLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
                 } else if (etat == Etat.PERDU) {
+                    curentUser.addUserHistory(new UserHistory(bundle.getString("lostLabel"),"","dd"));
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
                     dessin.drawString(bundle.getString("lostLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
@@ -567,7 +771,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     @Override
     public void windowClosing(WindowEvent e) {
-
+        xmlDbFileHandler.updateUserInToXmlFile(curentUser);
     }
 
     @Override

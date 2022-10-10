@@ -1,7 +1,7 @@
 import java.util.ListResourceBundle;
 
 public class LanguageResource_fr_FR extends ListResourceBundle {
-
+    
     @Override
     protected Object[][] getContents() {
         return new Object[][] {
@@ -22,7 +22,8 @@ public class LanguageResource_fr_FR extends ListResourceBundle {
                 {"settingLabel", "Paramètre"},
                 {"themeLabel", "Choisissez votre thème"},
                 {"levelLabel", "Choisir le niveau de jeu"},
-                {"gameLevels", new String[] { "Premier niveau", "Deuxième niveau" , "Troisième niveau" , "Niveau final"}},
+                {"themeList", new String[] { "Lumière", "Sombre" , "Hiver"}},
+                {"gameLevelList", new String[] { "Premier niveau", "Deuxième niveau" , "Troisième niveau" , "Niveau final"}},
                 {"windowsTitle", "Happy Bird (Oiseau Joyeux)"},
                 {"mosquitosNumberLabel", "{0,number} moustiques restants"},
                 {"lostLabel", "PERDU"},

@@ -1,18 +1,13 @@
+import java.util.Collections;
+import java.util.HashSet;
+
 public class User {
-    protected int userId;
     protected String userName;
 
-    public User(int userId, String userName) {
-        this.userId = userId;
+    protected HashSet<UserHistory> userHistoriesList = new HashSet<UserHistory>();
+    public User(String userName) {
+
         this.userName = userName;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getUserName() {
@@ -21,5 +16,17 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void addUserHistory(UserHistory ... userHistories) {
+
+        Collections.addAll(userHistoriesList , userHistories);
+    }
+
+    public HashSet<UserHistory> getUserHistoriesList() {
+        return userHistoriesList;
+    }
+    public void deleteUserHistoriesList() {
+        this.userHistoriesList =   new HashSet<UserHistory>();
     }
 }
