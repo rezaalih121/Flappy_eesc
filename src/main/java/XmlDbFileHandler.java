@@ -47,10 +47,10 @@ public class XmlDbFileHandler {
 
         try {
             DOMSource source = new DOMSource(doc);
-            System.out.println("-----------Modified File-----------");
+            //System.out.println("-----------Modified File-----------");
 
-            StreamResult consoleResult = new StreamResult(System.out);
-            transformer.transform(source, consoleResult);
+            //StreamResult consoleResult = new StreamResult(System.out);
+            //transformer.transform(source, consoleResult);
 
             StreamResult result = new StreamResult(new File(getPath()));
             transformer.transform(source, result);
@@ -63,7 +63,7 @@ public class XmlDbFileHandler {
     }
 
     private static String getPath() {
-        return System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\java\\userDatabase.xml";
+        return "src/main/resources/userDatabase.xml";
     }
 
     protected Element getUserElementByUserId(String userId) {
@@ -122,9 +122,9 @@ public class XmlDbFileHandler {
 
                     if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element hElement = (Element) nNode;
-                        System.out.println("\n Current element : " + hElement.getElementsByTagName("gameResult")
+                        /*System.out.println("\n Current element : " + hElement.getElementsByTagName("gameResult")
                                 .item(0)
-                                .getTextContent());
+                                .getTextContent());*/
                         gameResult = hElement.getElementsByTagName("gameResult")
                                 .item(0)
                                 .getTextContent();

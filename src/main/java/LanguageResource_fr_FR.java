@@ -1,15 +1,14 @@
 import java.util.ListResourceBundle;
 
 public class LanguageResource_fr_FR extends ListResourceBundle {
-    
     @Override
     protected Object[][] getContents() {
         return new Object[][] {
                 {"userInfoMenu", "Infos utilisateur"},
-                {"userLastPlayLabel", "Dernière partie jouée"},
-                {"userGameLevel", "Niveau de jeu de l'utilisateur"},
-                {"userLastPlayDate", "Dernière partie jouée"},
+                {"userHistoryTablaHeader", new String[]{"État du jeu", "Niveau de jeu", "Date & heure"}},
                 {"deleteUser", "Supprimer vos données utilisateur"},
+                {"deleteUserMessage", "Voulez-vous vraiment supprimer votre historique de jeu?!?"},
+                {"deleteUserRespond", new String[]{"Oui", "Non"}},
                 {"helpMenu", "Aide"},
                 {"controlKeys", "Touches de contrôle de base"},
                 {"jumpKeyLabel", "Appuyez sur la touche Espace pour sauter"},

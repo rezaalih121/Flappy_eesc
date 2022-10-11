@@ -1,14 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<happyBirdDb>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><happyBirdDb>
     <user ID="reza">
         <userId>reza</userId>
 
 
-        <userHistory>
-            <gameResult>PERDU</gameResult>
-            <datePlayed>2022/10/11 16:44:36</datePlayed>
-            <gameLevel>Premier niveau</gameLevel>
-        </userHistory>
+        
     </user>
     <user userId="ali">
         <userId>ali</userId>
@@ -58,4 +53,4 @@
             <gameLevel>Premier niveau</gameLevel>
         </userHistory>
     </user>
-</happyBirdDb>
+<user userId="dddddd"><userId>dddddd</userId><userHistory><gameResult>LOST</gameResult><datePlayed>11/10/2022 21:51:28</datePlayed><gameLevel>First Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>11/10/2022 22:14:12</datePlayed><gameLevel>First Level</gameLevel></userHistory></user></happyBirdDb>

@@ -75,7 +75,7 @@ public class Oiseau extends Carre implements Deplacable {
     public void dessiner(Graphics2D dessin, ImageObserver imageObserver) {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\bird.png");
+        Image img = t.getImage("src/main/resources/bird.png");
         /*Image img;
         try {
             img = ImageIO.read(new File("src/main/java/bird.png"));

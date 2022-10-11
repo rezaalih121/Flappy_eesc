@@ -12,7 +12,7 @@ public class OiseauMechant extends Rectangle implements Deplacable {
     public void dessiner(Graphics2D dessin, ImageObserver imageObserver) {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\oiseauMechant.png");
+        Image img = t.getImage("src/main/resources/oiseauMechant.png");
         //dessin.fillRect( x, y, largeur, largeur);
         dessin.drawImage(img, x, y, largeur, hauteur, imageObserver);
     }

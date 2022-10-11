@@ -44,7 +44,7 @@ public class FormCreator {
             int alignement
     ) {
         Box conteneurVertical = Box.createVerticalBox();
-        conteneurVertical.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        //conteneurVertical.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
         //ajout de la marge verticale en hauteur
         conteneurVertical.add(Box.createRigidArea(new Dimension(1, marginTop)));
@@ -79,7 +79,7 @@ public class FormCreator {
             int alignement
     ) {
         Box conteneurHorisontal = Box.createHorizontalBox();
-        conteneurHorisontal.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+        //conteneurHorisontal.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 
         //ajout de la marge verticale en hauteur
         conteneurHorisontal.add(Box.createRigidArea(new Dimension(1, marginTop)));

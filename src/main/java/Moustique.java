@@ -19,7 +19,7 @@ public class Moustique extends Rectangle implements Deplacable {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
 
-        Image img = t.getImage(System.getProperty("user.home") + "\\IdeaProjects\\Flappy_eesc\\src\\main\\resources\\mostique.png");
+        Image img = t.getImage("src/main/resources/mostique.png");
 
         dessin.drawImage(img, x, y, largeur, hauteur, imageObserver);
     }

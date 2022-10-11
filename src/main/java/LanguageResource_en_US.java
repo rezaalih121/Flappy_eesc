@@ -6,10 +6,10 @@ public class LanguageResource_en_US extends ListResourceBundle {
     protected Object[][] getContents() {
         return new Object[][]{
                 {"userInfoMenu", "User Info"},
-                {"userLastPlayLabel", "Last game played"},
-                {"userGameLevel", "User game level"},
-                {"userLastPlayDate", "Date played"},
+                {"userHistoryTablaHeader", new String[]{"Game State", "Game Level", "Date & Time"}},
                 {"deleteUser", "Delete your user data"},
+                {"deleteUserMessage", "Do you really want to delete your game history ?!?"},
+                {"deleteUserRespond", new String[]{"Yse", "No"}},
                 {"helpMenu", "Help"},
                 {"controlKeys", "Basic Control Keys"},
                 {"jumpKeyLabel", "Press Space key to jump"},

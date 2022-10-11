@@ -4,7 +4,7 @@
     <root id="archive" name="Flappy_eesc.jar">
       <element id="module-output" name="Flappy_eesc" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/flatlaf/2.5/flatlaf-2.5.jar" path-in-jar="/" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/userDatabase.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/userDatabase.xml" />
     </root>
   </artifact>
 </component>
