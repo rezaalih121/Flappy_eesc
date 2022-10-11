@@ -1,10 +1,10 @@
 import java.util.ListResourceBundle;
 
-public class LanguageResource extends ListResourceBundle {
+public class LanguageResource_en_US extends ListResourceBundle {
 
     @Override
     protected Object[][] getContents() {
-        return new Object[][] {
+        return new Object[][]{
                 {"userInfoMenu", "User Info"},
                 {"userLastPlayLabel", "Last game played"},
                 {"userGameLevel", "User game level"},
@@ -21,9 +21,9 @@ public class LanguageResource extends ListResourceBundle {
                 {"userNameLabel", "User Name"},
                 {"settingLabel", "Setting"},
                 {"themeLabel", "Choose your theme"},
-                {"themeList", new String[] { "Light", "Dark" , "Winter"}},
+                {"themeList", new String[]{"Light", "Dark", "Winter"}},
                 {"levelLabel", "Choose game level"},
-                {"gameLevelList", new String[] { "First Level", "Second Level" , "Third Level" , "Final Level"}},
+                {"gameLevelList", new String[]{"First Level", "Second Level", "Third Level", "Final Level"}},
                 {"windowsTitle", "Happy Bird"},
                 {"mosquitosNumberLabel", "{0,number} mosquitos left"},
                 {"lostLabel", "LOST"},

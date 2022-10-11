@@ -14,7 +14,10 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Flappy extends Canvas implements KeyListener, EventListener, MouseListener, MouseMotionListener, MouseWheelListener, ComponentListener, WindowListener {
@@ -35,6 +38,9 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     protected int nombreDeMoustique;
     protected int nombreDeMechantOiseau;
     protected int nombreDeNuage;
+    protected int gameLevel = 0;
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    LocalDateTime localDateTime = LocalDateTime.now();
     protected int textWidth = 0;
     protected Toolkit toolkit = Toolkit.getDefaultToolkit();
     JLabel jLabelBackground = null;
@@ -47,7 +53,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     protected Etat etat = Etat.PAUSE;
 
-    protected JDialog welcomeDialog , userInfoDialog , settingDialog;
+    protected JDialog welcomeDialog, userInfoDialog, settingDialog;
 
     protected XmlDbFileHandler xmlDbFileHandler;
     protected Image backgroundImage;
@@ -68,57 +74,76 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     public void setWindowsTheme(int theme) {
         try {
+
             if (theme == 0) {
                 UIManager.setLookAndFeel(new FlatLightLaf());
+
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "background.jpg");
-            } else if(theme == 1) {
-                UIManager.setLookAndFeel( new FlatDarculaLaf());
+            } else if (theme == 1) {
+                UIManager.setLookAndFeel(new FlatDarkLaf());
+
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "NightBackground.jpg");
 
-            }else if (theme == 2) {
-                UIManager.setLookAndFeel( new FlatDarculaLaf());
+            } else if (theme == 2) {
+                UIManager.setLookAndFeel(new FlatDarculaLaf());
+
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
 
             }
-
             SwingUtilities.updateComponentTreeUI(this);
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize LaF");
         }
     }
+
     public void setGameLevel(int level) {
         try {
+            gameLevel = level;
             if (level == 0) {
+                nombreDeMoustique = generateRandomNumber(10, 20);
+                nombreDeMechantOiseau = 3;
+                nombreDeNuage = 10;
                 UIManager.setLookAndFeel(new FlatLightLaf());
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "background.jpg");
-            } else if(level == 1) {
-                UIManager.setLookAndFeel( new FlatDarculaLaf());
+            } else if (level == 1) {
+                nombreDeMoustique = generateRandomNumber(20, 30);
+                nombreDeMechantOiseau = 5;
+                nombreDeNuage = 14;
+                UIManager.setLookAndFeel(new FlatDarculaLaf());
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "NightBackground.jpg");
 
-            }else if (level == 2) {
-                UIManager.setLookAndFeel( new FlatDarculaLaf());
+            } else if (level == 2) {
+                nombreDeMoustique = generateRandomNumber(30, 40);
+                nombreDeMechantOiseau = 7;
+                nombreDeNuage = 21;
+                UIManager.setLookAndFeel(new FlatDarculaLaf());
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
 
-            } else if (level == 2) {
-                UIManager.setLookAndFeel( new FlatDarculaLaf());
+            } else if (level == 3) {
+                nombreDeMoustique = generateRandomNumber(40, 50);
+                nombreDeMechantOiseau = 14;
+                nombreDeNuage = 27;
+                UIManager.setLookAndFeel(new FlatDarculaLaf());
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
 
             }
 
             SwingUtilities.updateComponentTreeUI(this);
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
+            this.repaint();
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize LaF");
         }
     }
+
     public Flappy() throws InterruptedException {
-        FlatDarkLaf.setup();
+        FlatLightLaf.setup();
         //loading locale language
         for (Locale locale1 : supportedLocales) {
             if (locale1.getLanguage().equals(Locale.getDefault().getLanguage())) {
@@ -147,7 +172,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         backgroundImage = toolkit.getImage(filesPath + "background.jpg");
         Image img = toolkit.getImage(filesPath + "bird.png");
         GridLayout gridLayout = new GridLayout(3, 1);
-      
+
 
         JMenuBar jMenuBar = new JMenuBar();
 
@@ -158,35 +183,31 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         userInfoDialog.setSize(500, 500);
         userInfoDialog.setResizable(false);
         userInfoDialog.setLocationRelativeTo(fenetre);
-        userInfoDialog.setLayout(gridLayout);
+        userInfoDialog.setLayout(new BorderLayout());
 
 
         JLabel userInfoLabel = new JLabel();
-        userInfoDialog.add( userInfoLabel);
-        JScrollPane jScrollPaneTable = new JScrollPane();
-        jScrollPaneTable.setSize(500 , 300);
-        jScrollPaneTable.setVerticalScrollBar(new JScrollBar());
-        jScrollPaneTable.setHorizontalScrollBar(new JScrollBar());
-        jScrollPaneTable.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        jScrollPaneTable.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        TableHandler tableHandler = new TableHandler(curentUser,bundle);
-        jScrollPaneTable.add(tableHandler.getTable(curentUser,bundle));
+        userInfoDialog.add(FormCreator.generateRow(userInfoLabel, 10, 10, 10, 10, FormCreator.ALIGN_LEFT), BorderLayout.NORTH);
 
-        userInfoDialog.add(jScrollPaneTable);
+        TableHandler tableHandler = new TableHandler(curentUser, bundle);
+        tableHandler.setColumnSelectionAllowed(true);
+        userInfoDialog.add(FormCreator.generateRow(tableHandler, 10, 10, 10, 10, FormCreator.ALIGN_RIGHT), BorderLayout.CENTER);
+
 
         JButton deleteUserInfoButton = new JButton(bundle.getString("deleteUser"));
-        deleteUserInfoButton.addActionListener(e ->{
+        deleteUserInfoButton.addActionListener(e -> {
             curentUser.deleteUserHistoriesList();
+            curentUser.getUserHistoriesList();
             xmlDbFileHandler.deleteUserGameHistory(curentUser);
 
-            tableHandler.getTable(curentUser,bundle);
+            tableHandler.getTable(curentUser, bundle);
         });
-        userInfoDialog.add(deleteUserInfoButton);
+        userInfoDialog.add(FormCreator.generateField(null, deleteUserInfoButton, 10), BorderLayout.SOUTH);
         JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
         jMenuUserInfo.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                tableHandler.getTable(curentUser,bundle);
+                tableHandler.getTable(curentUser, bundle);
                 userInfoDialog.setVisible(true);
                 tableHandler.repaint();
             }
@@ -222,7 +243,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             jSubMenuTheme.addActionListener(e -> {
                 setWindowsTheme(finalI);
             });
-            jMenuItemTheme.add( jSubMenuTheme);
+            jMenuItemTheme.add(jSubMenuTheme);
         }
 
         jMenuSetting.add(jMenuItemTheme);
@@ -237,7 +258,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             jSubMenuLevel.addActionListener(e -> {
                 setGameLevel(finalI);
             });
-            jMenuItemLevel.add( jSubMenuLevel);
+            jMenuItemLevel.add(jSubMenuLevel);
         }
 
         jMenuSetting.add(jMenuItemLevel);
@@ -256,7 +277,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                                 bundle.getString("mouseDragLabel") + "\n" +
                                 bundle.getString("mouseWheelLabel") + "\n" +
                                 bundle.getString("arrowsKeysLabel") + "\n",
-                        bundle.getString("helpMenu"),JOptionPane.INFORMATION_MESSAGE
+                        bundle.getString("helpMenu"), JOptionPane.INFORMATION_MESSAGE
 
                 );
             }
@@ -287,31 +308,35 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         JMenuItem jMenuItemEn = new JMenuItem(supportedLocales[0].getDisplayLanguage());
         JMenuItem jMenuItemFr = new JMenuItem(supportedLocales[1].getDisplayLanguage());
         jMenuItemFr.addActionListener(e -> {
-            //System.out.println(locale.getDisplayLanguage());
-            locale = supportedLocales[1];
-            bundle = ResourceBundle.getBundle("LanguageResource", locale);
 
-            //System.out.println("FR : "+bundle.getLocale().getDisplayLanguage());
+            locale = supportedLocales[1];
+
+            bundle = ResourceBundle.getBundle("LanguageResource_fr_FR");
+
+            System.out.println("FR : " + bundle.getLocale().getDisplayLanguage() + " local : " + locale.getDisplayLanguage());
 
             jMenuLanguage.setText(bundle.getString("languageMenu") + " : " + locale.getDisplayLanguage());
             jMenuUserInfo.setText(bundle.getString("userInfoMenu"));
             jMenuSetting.setText(bundle.getString("settingLabel"));
             jMenuHelp.setText(bundle.getString("helpMenu"));
             fenetre.setTitle(bundle.getString("windowsTitle"));
-
+            jMenuBar.repaint();
         });
         jMenuItemEn.addActionListener(e -> {
-            //System.out.println(locale.getDisplayLanguage());
-            locale = supportedLocales[DEFAULT_LOCALE];
-            bundle = ResourceBundle.getBundle("LanguageResource", locale);
 
-            //System.out.println("EN : "+bundle.getLocale().getDisplayLanguage());
+            locale = supportedLocales[0];
+
+            bundle = ResourceBundle.getBundle("LanguageResource_en_US");
+
+            System.out.println("EN : " + bundle.getLocale().getDisplayLanguage() + " local : " + locale.getDisplayLanguage());
 
             jMenuLanguage.setText(bundle.getString("languageMenu") + " : " + locale.getDisplayLanguage());
             jMenuUserInfo.setText(bundle.getString("userInfoMenu"));
             jMenuSetting.setText(bundle.getString("settingLabel"));
             jMenuHelp.setText(bundle.getString("helpMenu"));
             fenetre.setTitle(bundle.getString("windowsTitle"));
+            fenetre.repaint();
+            jMenuBar.repaint();
 
         });
 
@@ -328,15 +353,17 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         fenetre.setJMenuBar(jMenuBar);
 
         welcomeDialog = new JDialog(fenetre, bundle.getString("welcomeLabel"));
+        welcomeDialog.setLayout(new BorderLayout());
+
         JLabel welcomeLabel = new JLabel(bundle.getString("welcomeUserLabel"));
-        welcomeLabel.setFont(new Font("Calibri", Font.BOLD, 14));
+        welcomeLabel.setFont(new Font("Calibri", Font.BOLD, 12));
         JLabel loginLabel = new JLabel(bundle.getString("userNameLabel"));
         JLabel loginMessageLabel = new JLabel();
 
         loginMessageLabel.setBackground(Color.yellow);
 
         JTextField loginTextField = new JTextField();
-        loginTextField.setSize(121, 20);
+        loginTextField.setMaximumSize(new Dimension(121, 20));
         loginTextField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -369,46 +396,35 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         JButton loginButton = new JButton(bundle.getString("loginButton"));
         loginButton.addActionListener(e -> {
 
-            if(loginTextField.getText().length()>0){
+            if (loginTextField.getText().length() > 0) {
                 etat = Etat.EN_COURS;
 
                 curentUser = xmlDbFileHandler.getUserFromXmlFile(loginTextField.getText());
-                userInfoLabel.setText(bundle.getString("userNameLabel" )+ " : " + curentUser.getUserName());
+                userInfoLabel.setText(bundle.getString("userNameLabel") + " : " + curentUser.getUserName());
                 initialiser();
                 welcomeDialog.setVisible(false);
-            }else{
-                JOptionPane.showMessageDialog(welcomeDialog,bundle.getString("welcomeUserLabel"),bundle.getString("welcomeUserLabel"),JOptionPane.CLOSED_OPTION);
+            } else {
+                JOptionPane.showMessageDialog(welcomeDialog, bundle.getString("welcomeUserLabel"), bundle.getString("welcomeUserLabel"), JOptionPane.CLOSED_OPTION);
             }
 
 
         });
 
 
-
-
-        welcomeDialog.setLayout(gridLayout);
         welcomeDialog.setIconImage(img);
-        welcomeDialog.add(welcomeLabel, CENTER_ALIGNMENT);
-        loginLabel.setSize(400, 70);
+
+        welcomeDialog.add(FormCreator.generateRow(welcomeLabel, 10, 10, 10, 10, FormCreator.ALIGN_LEFT), BorderLayout.NORTH);
+        welcomeDialog.add(FormCreator.generateField(loginLabel, loginTextField, 10), BorderLayout.CENTER);
+
+        welcomeDialog.add(FormCreator.generateField(null, loginButton, 40), BorderLayout.EAST);
+        welcomeDialog.add(FormCreator.generateRow(loginMessageLabel, 10, 10, 10, 10, FormCreator.ALIGN_LEFT), BorderLayout.SOUTH);
 
 
-        JPanel jPanelWelcomeDialog = new JPanel();
-        jPanelWelcomeDialog.setLayout(new GridLayout(1, 3));
-
-
-
-        jPanelWelcomeDialog.add(loginLabel, RIGHT_ALIGNMENT);
-        jPanelWelcomeDialog.add(loginTextField, LEFT_ALIGNMENT);
-        jPanelWelcomeDialog.add(loginButton);
-        jPanelWelcomeDialog.setAlignmentX(CENTER_ALIGNMENT);
-
-
-        welcomeDialog.add(jPanelWelcomeDialog);
-        welcomeDialog.add(loginMessageLabel);
+        welcomeDialog.setSize(400, 200);
         welcomeDialog.setVisible(false);
         welcomeDialog.setFocusableWindowState(true);
-        welcomeDialog.setSize(400, 200);
         welcomeDialog.setResizable(false);
+        welcomeDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         welcomeDialog.setLocationRelativeTo(fenetre);
 
 
@@ -483,33 +499,31 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 listSprite.add(tuyau);
             }
 
-
             listDeplacable.add(oiseau);
-
             listSprite.add(oiseau);
 
-            //tuyau = new Tuyau(300, hauteurEcran, largeurEcran + 50);
-            nombreDeMoustique = generateRandomNumber(20, 30);
+            setGameLevel(gameLevel);
+
             for (int i = 0; i < nombreDeMoustique; i++) {
                 moustique = new Moustique(largeurEcran, hauteurEcran);
                 listDeplacable.add(moustique);
                 listMoustique.add(moustique);
                 point++;
             }
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < nombreDeMechantOiseau; i++) {
                 OiseauMechant oiseauMechant = new OiseauMechant(largeurEcran, hauteurEcran);
                 listDeplacable.add(oiseauMechant);
                 listSprite.add(oiseauMechant);
 
             }
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < nombreDeNuage; i++) {
                 Nuage nuage = new Nuage(largeurEcran, hauteurEcran);
                 listDeplacable.add(nuage);
                 listSprite.add(nuage);
 
             }
         } else {
-            nombreDeMoustique = generateRandomNumber(20, 30);
+            setGameLevel(gameLevel);
             listMoustique = new ArrayList<>();
             point = 0;
             for (int i = 0; i < nombreDeMoustique; i++) {
@@ -617,19 +631,21 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 if (etat == Etat.PAUSE) {
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
-
                     dessin.drawString(bundle.getString("pauseLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
                 } else if (etat == Etat.PERDU) {
-                    curentUser.addUserHistory(new UserHistory(bundle.getString("lostLabel"),"","dd"));
+
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
                     dessin.drawString(bundle.getString("lostLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
+                    setGameLevel(gameLevel);
+
                 } else if (etat == Etat.GAGNE) {
-                    nombreDeMoustique = generateRandomNumber(20, 30);
-                    point = nombreDeMoustique;
+
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
                     dessin.drawString(bundle.getString("wonLebel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
+                    setGameLevel(gameLevel);
+
                 }
             }
             //-----------------------------
@@ -674,6 +690,12 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             oiseau.setVitesseVertical(2);
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            setGameLevel(gameLevel);
+            if (Etat.GAGNE == etat) {
+                curentUser.addUserHistory(new UserHistory(bundle.getString("wonLebel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
+            } else if (Etat.PERDU == etat) {
+                curentUser.addUserHistory(new UserHistory(bundle.getString("lostLabel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
+            }
             initialiser();
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {

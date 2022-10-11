@@ -15,6 +15,7 @@ public class TableHandler extends JTable implements ActionListener {
     public TableHandler(User curentUser, ResourceBundle bundle) {
         this.curentUser = curentUser;
         bundle = bundle;
+        getTable(curentUser, bundle);
     }
 
     @Override
@@ -44,11 +45,11 @@ public class TableHandler extends JTable implements ActionListener {
 
 
         if (curentUser != null && curentUser.getUserHistoriesList().size() > 0) {
-            String column[] = {getBundle().getString("userLastPlayLabel")+"", getBundle().getString("userGameLevel")+"", getBundle().getString("userLastPlayDate")+""};
+            String column[] = {getBundle().getString("userLastPlayLabel"), getBundle().getString("userGameLevel"), getBundle().getString("userLastPlayDate")};
             String data[][] = new String[curentUser.getUserHistoriesList().size()][3];
             int i = 0;
             for (UserHistory userHistoryser : curentUser.getUserHistoriesList()) {
-                System.out.println(column[0]+column[1]+column[2]);
+                System.out.println(column[0] + column[1] + column[2]);
                 //System.out.println(userHistoryser.getGameResult() + userHistoryser.getGameLevel() + userHistoryser.datePlayed);
                 data[i][0] = userHistoryser.getGameResult();
                 data[i][1] = userHistoryser.getGameLevel();
@@ -56,18 +57,18 @@ public class TableHandler extends JTable implements ActionListener {
                 i++;
             }
             DefaultTableModel model = new DefaultTableModel(data, column);
-             this.setModel(model);
+            this.setModel(model);
             //this.getColumn(column[0]).setMaxWidth(40);
             //this.getColumn(column[1]).setMaxWidth(30);
 
         }
 
-        this.setShowGrid(true);
-        this.setShowVerticalLines(true);
+        //this.setShowGrid(true);
+        //this.setShowVerticalLines(true);
         this.getScrollableTracksViewportHeight();
         this.getAutoscrolls();
-        this.setBounds(0, 0, 500, 300);
-        this.setSize(500, 300);
+        //this.setBounds(0, 0, 500, 300);
+        //this.setSize(500, 300);
         this.repaint();
         return this;
     }
