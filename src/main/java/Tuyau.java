@@ -1,8 +1,5 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
 
 public class Tuyau extends Rectangle implements Deplacable {
 
@@ -54,7 +51,7 @@ public class Tuyau extends Rectangle implements Deplacable {
         int i = (int) (Math.random() * 7);
         tuyauLargeur = (tuyauLargeur == largeurEcran + i * Flappy.generateRandomNumber(100, 200)) ? (largeurEcran + i * Flappy.generateRandomNumber(100, 200)) : (largeurEcran + i * Flappy.generateRandomNumber(100, 200));
 
-        x = (int) (Math.random() + tuyauLargeur );
+        x = (int) (Math.random() + tuyauLargeur);
         ///hauteur = Flappy.generateRandomNumber(hauteurEcran,200);
     }
 }

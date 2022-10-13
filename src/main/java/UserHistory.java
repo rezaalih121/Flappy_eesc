@@ -3,7 +3,7 @@ public class UserHistory {
     protected String datePlayed;
     protected String gameLevel;
 
-    public UserHistory( String gameResult, String datePlayed, String gameLevel) {
+    public UserHistory(String gameResult, String datePlayed, String gameLevel) {
 
         this.gameResult = gameResult;
         this.datePlayed = datePlayed;

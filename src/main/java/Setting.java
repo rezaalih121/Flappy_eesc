@@ -2,9 +2,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Setting {
-    protected ResourceBundle bundle ;
-    protected String[] gameLevels ;
-    protected String theme ;
+    protected ResourceBundle bundle;
+    protected String[] gameLevels;
+    protected String theme;
 
     public Setting(ResourceBundle bundle, String theme) {
         this.bundle = bundle;

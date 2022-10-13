@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,6 +62,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             new Locale("en", "US"),
             new Locale("fr", "FR")
     };
+    private int currentTheme = 0;
+    private int currentLevel = 0;
 
     public static int generateRandomNumber(int from, int to) {
         return RANDOMISER.nextInt((to + 1) - from) + from;
@@ -68,7 +71,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     public void setWindowsTheme(int theme) {
         try {
-
+            currentTheme = theme;
             if (theme == 0) {
                 UIManager.setLookAndFeel(new FlatLightLaf());
 
@@ -87,7 +90,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 toolkit = Toolkit.getDefaultToolkit();
                 backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
                 jMenuBar.repaint();
-                
+
             }
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception ex) {
@@ -96,6 +99,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     }
 
     public void setGameLevel(int level) {
+        currentLevel = level;
         try {
             gameLevel = level;
             if (level == 0) {
@@ -167,11 +171,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         toolkit = Toolkit.getDefaultToolkit();
         backgroundImage = toolkit.getImage(filesPath + "background.jpg");
         Image img = toolkit.getImage(filesPath + "bird.png");
-        GridLayout gridLayout = new GridLayout(3, 1);
 
 
         jMenuBar = new JMenuBar();
-
+        addMouseEnteredExitedListener(jMenuBar);
 
         userInfoDialog = new JDialog(fenetre, bundle.getString("userInfoMenu"));
         userInfoDialog.setVisible(false);
@@ -183,24 +186,26 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
 
         JLabel userInfoLabel = new JLabel();
+        userInfoLabel.setFont(new Font("Arial", Font.BOLD, 21));
+
         userInfoDialog.add(FormCreator.generateRow(userInfoLabel, 10, 10, 10, 10, FormCreator.ALIGN_LEFT), BorderLayout.NORTH);
 
         TableHandler tableHandler = new TableHandler();
         JPanel jPanelTable = new JPanel(new BorderLayout());
-        jPanelTable.add(FormCreator.generateRow(tableHandler.getTableHeader(),0,0,0,0,0),BorderLayout.NORTH);
-        jPanelTable.add(FormCreator.generateRow(tableHandler,0,0,0,0,0),BorderLayout.CENTER);
+        jPanelTable.add(FormCreator.generateRow(tableHandler.getTableHeader(), 0, 0, 0, 0, 0), BorderLayout.NORTH);
+        jPanelTable.add(FormCreator.generateRow(tableHandler, 0, 0, 0, 0, 0), BorderLayout.CENTER);
         userInfoDialog.add(FormCreator.generateRow(jPanelTable, 10, 10, 10, 10, FormCreator.ALIGN_RIGHT), BorderLayout.CENTER);
 
         JButton deleteUserInfoButton = new JButton(bundle.getString("deleteUser"));
         deleteUserInfoButton.addActionListener(e -> {
             String[] choices = bundle.getStringArray("deleteUserRespond");
             String defaultChoice = choices[0];
-            if (JOptionPane.showOptionDialog(userInfoDialog, bundle.getString("deleteUserMessage"), bundle.getString("deleteUserMessage"), JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,choices,defaultChoice) == JOptionPane.YES_OPTION) {
+            if (JOptionPane.showOptionDialog(userInfoDialog, bundle.getString("deleteUserMessage"), bundle.getString("deleteUserMessage"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, defaultChoice) == JOptionPane.YES_OPTION) {
                 curentUser.deleteUserHistoriesList();
                 xmlDbFileHandler.deleteUserGameHistory(curentUser);
                 curentUser = xmlDbFileHandler.getUserFromXmlFile(curentUser.userName);
                 curentUser.getUserHistoriesList();
-                System.out.println(curentUser.getUserHistoriesList().size());
+                //System.out.println(curentUser.getUserHistoriesList().size());
                 tableHandler.setCurentUser(curentUser);
                 tableHandler.setBundle(bundle);
                 tableHandler.setTable();
@@ -210,8 +215,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
 
         });
-        userInfoDialog.add(FormCreator.generateField(null, deleteUserInfoButton, 10), BorderLayout.SOUTH);
+        userInfoDialog.add(FormCreator.generateField(null, deleteUserInfoButton, 70), BorderLayout.SOUTH);
+        deleteUserInfoButton.setAlignmentX(CENTER_ALIGNMENT);
         JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
+        addMouseEnteredExitedListener(jMenuBar);
         jMenuUserInfo.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -219,6 +226,9 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 tableHandler.setBundle(bundle);
                 tableHandler.setTable();
                 tableHandler.repaint();
+                userInfoLabel.repaint();
+                deleteUserInfoButton.repaint();
+                userInfoDialog.repaint();
                 userInfoDialog.setVisible(true);
 
             }
@@ -235,21 +245,23 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
+                etat = Etat.PAUSE;
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
+                etat = Etat.EN_COURS;
             }
         });
 
         JMenu jMenuSetting = new JMenu(bundle.getString("settingLabel"));
-
+        addMouseEnteredExitedListener(jMenuSetting);
         JMenu jMenuItemTheme = new JMenu(bundle.getString("themeLabel"));
+        addMouseEnteredExitedListener(jMenuItemTheme);
         jMenuItemTheme.setMnemonic(KeyEvent.VK_S);
         for (int i = 0; i < bundle.getStringArray("themeList").length; i++) {
             JMenuItem jSubMenuTheme = new JMenuItem(bundle.getStringArray("themeList")[i]);
+            addMouseEnteredExitedListener(jSubMenuTheme);
             int finalI = i;
             jSubMenuTheme.addActionListener(e -> {
                 setWindowsTheme(finalI);
@@ -262,9 +274,11 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         jMenuSetting.addSeparator();
 
         JMenu jMenuItemLevel = new JMenu(bundle.getString("levelLabel"));
+        addMouseEnteredExitedListener(jMenuItemLevel);
         jMenuItemTheme.setMnemonic(KeyEvent.VK_S);
         for (int i = 0; i < bundle.getStringArray("gameLevelList").length; i++) {
             JMenuItem jSubMenuLevel = new JMenuItem(bundle.getStringArray("gameLevelList")[i]);
+            addMouseEnteredExitedListener(jSubMenuLevel);
             int finalI = i;
             jSubMenuLevel.addActionListener(e -> {
                 setGameLevel(finalI);
@@ -276,48 +290,40 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
 
         JMenu jMenuHelp = new JMenu(bundle.getString("helpMenu"));
-        jMenuHelp.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(
-                        fenetre,
+        addMouseEnteredExitedListener(jMenuHelp);
+        JMenuItem gameControlsMenu = new JMenuItem(bundle.getString("controlKeys"));
+        addMouseEnteredExitedListener(gameControlsMenu);
+        JMenuItem aboutUsMenu = new JMenuItem(bundle.getString("aboutUsMenu"));
+        addMouseEnteredExitedListener(aboutUsMenu);
 
-                        bundle.getString("controlKeys") + "\n" +
-                                bundle.getString("jumpKeyLabel") + "\n" +
-                                bundle.getString("resetKeyLabel") + "\n" +
-                                bundle.getString("mouseDragLabel") + "\n" +
-                                bundle.getString("mouseWheelLabel") + "\n" +
-                                bundle.getString("arrowsKeysLabel") + "\n",
-                        bundle.getString("helpMenu"), JOptionPane.INFORMATION_MESSAGE
+        jMenuHelp.add(gameControlsMenu);
 
-                );
-            }
+        jMenuHelp.add(aboutUsMenu);
+        aboutUsMenu.addActionListener(e -> {
+            JOptionPane.showMessageDialog(fenetre, bundle.getString("windowsTitle") + " " + bundle.getString("aboutUs"), bundle.getString("aboutUsMenu"), JOptionPane.INFORMATION_MESSAGE);
+        });
 
-            @Override
-            public void mousePressed(MouseEvent e) {
 
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
+        gameControlsMenu.addActionListener(e -> {
+            JOptionPane.showMessageDialog(
+                    fenetre,
+                    bundle.getString("controlKeys") + "\n" +
+                            bundle.getString("jumpKeyLabel") + "\n" +
+                            bundle.getString("resetKeyLabel") + "\n" +
+                            bundle.getString("mouseDragLabel") + "\n" +
+                            bundle.getString("mouseWheelLabel") + "\n" +
+                            bundle.getString("arrowsKeysLabel") + "\n",
+                    bundle.getString("helpMenu"), JOptionPane.INFORMATION_MESSAGE
+            );
         });
 
 
         JMenu jMenuLanguage = new JMenu(bundle.getString("languageMenu") + " : " + locale.getDisplayLanguage());
+        addMouseEnteredExitedListener(jMenuLanguage);
         JMenuItem jMenuItemEn = new JMenuItem(supportedLocales[0].getDisplayLanguage());
+        addMouseEnteredExitedListener(jMenuItemEn);
         JMenuItem jMenuItemFr = new JMenuItem(supportedLocales[1].getDisplayLanguage());
+        addMouseEnteredExitedListener(jMenuItemFr);
         jMenuItemFr.addActionListener(e -> {
 
             locale = supportedLocales[1];
@@ -334,6 +340,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             jMenuBar.repaint();
             userInfoDialog.repaint();
             deleteUserInfoButton.repaint();
+            jMenuItemLevel.repaint();
             userInfoLabel.repaint();
 
         });
@@ -354,7 +361,9 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             jMenuBar.repaint();
             userInfoDialog.repaint();
             deleteUserInfoButton.repaint();
+            jMenuItemLevel.repaint();
             userInfoLabel.repaint();
+
 
         });
 
@@ -426,8 +435,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
                 curentUser = xmlDbFileHandler.getUserFromXmlFile(loginTextField.getText());
                 userInfoLabel.setText(bundle.getString("userNameLabel") + " : " + curentUser.getUserName());
-                initialiser();
                 welcomeDialog.setVisible(false);
+                //if (JOptionPane.showOptionDialog(welcomeDialog, bundle.getString("welcomeLabel") + "  " + curentUser.getUserName(), bundle.getString("welcomeLabel"), JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null) == JOptionPane.OK_OPTION)
+                initialiser();
+
             } else {
                 JOptionPane.showMessageDialog(welcomeDialog, bundle.getString("welcomeUserLabel"), bundle.getString("welcomeUserLabel"), JOptionPane.CLOSED_OPTION);
             }
@@ -484,10 +495,13 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     }
 
     void playSound(String soundFile) {
-        File f = new File("src/main/resources/bk_island_ambience_02.wav" + soundFile);
+        soundFile = "bk_island_ambience_02.wav";
+
         AudioInputStream audioIn = null;
         try {
-            audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            File f = new File(filesPath + soundFile);
+            //System.out.println(filesPath + soundFile);
+            audioIn = AudioSystem.getAudioInputStream(f);
 
             Clip clip = null;
 
@@ -721,7 +735,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             } else if (Etat.PERDU == etat) {
                 curentUser.addUserHistory(new UserHistory(bundle.getString("lostLabel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
             }
+
             initialiser();
+            setGameLevel(currentLevel);
+            setWindowsTheme(currentTheme);
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {
             etat = etat == Etat.PAUSE ? Etat.EN_COURS : Etat.PAUSE;
@@ -790,7 +807,11 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         largeurEcran = this.getWidth();
         hauteurEcran = this.getHeight();
         windowsResized = true;
+
         initialiser();
+        setGameLevel(currentLevel);
+        setWindowsTheme(currentTheme);
+
     }
 
     @Override
@@ -843,5 +864,34 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     @Override
     public void windowDeactivated(WindowEvent e) {
 
+    }
+
+    protected void addMouseEnteredExitedListener(Component component) {
+        component.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                etat = Etat.PAUSE;
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                etat = Etat.EN_COURS;
+            }
+        });
     }
 }

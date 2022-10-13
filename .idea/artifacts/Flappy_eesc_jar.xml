@@ -1,10 +1,11 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Flappy_eesc:jar">
+  <artifact name="Flappy_eesc:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/Flappy_eesc_jar</output-path>
-    <root id="archive" name="Flappy_eesc.jar">
-      <element id="module-output" name="Flappy_eesc" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/flatlaf/2.5/flatlaf-2.5.jar" path-in-jar="/" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/userDatabase.xml" />
+    <root id="root">
+      <element id="archive" name="Flappy_eesc.jar">
+        <element id="module-output" name="Flappy_eesc" />
+      </element>
+      <element id="library" level="project" name="Maven: com.formdev:flatlaf:2.5" />
     </root>
   </artifact>
 </component>

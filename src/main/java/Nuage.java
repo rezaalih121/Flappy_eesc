@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.image.ImageObserver;
-import java.io.File;
 
 public class Nuage extends Rectangle implements Deplacable {
     public Nuage(int largeurEcran, int hauteurEcran) {

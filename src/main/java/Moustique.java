@@ -33,13 +33,19 @@ public class Moustique extends Rectangle implements Deplacable {
     }
 
     public void deplacer(int largeurEcran) {
-        x -= 1;
+        x--;
 
     }
 
     public void reinitialiser(int largeurEcran, int hauteurEcran) {
-        x = (int) (Math.random() * largeurEcran);
+        int moustiqueLargeur = largeurEcran;
+        int i = (int) (Math.random() * 7);
+        moustiqueLargeur = (moustiqueLargeur == largeurEcran + i * Flappy.generateRandomNumber(100, 200)) ? (largeurEcran + i * Flappy.generateRandomNumber(100, 200)) : (largeurEcran + i * Flappy.generateRandomNumber(100, 200));
+
+
+        x = (int) (Math.random() + moustiqueLargeur);
         y = (int) (Math.random() * (hauteurEcran / 2));
+
 
         largeur = (int) (Math.random() * 10 + 30);
         hauteur = (int) (Math.random() * 10 + 20);

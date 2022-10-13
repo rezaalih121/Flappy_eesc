@@ -74,7 +74,7 @@ public class TableHandler extends JTable implements ActionListener {
     }
 
     @Override
-    public DefaultTableCellRenderer getCellRenderer (int arg0, int arg1) {
+    public DefaultTableCellRenderer getCellRenderer(int arg0, int arg1) {
         return renderCenter;
     }
 }

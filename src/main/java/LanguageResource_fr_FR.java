@@ -3,13 +3,15 @@ import java.util.ListResourceBundle;
 public class LanguageResource_fr_FR extends ListResourceBundle {
     @Override
     protected Object[][] getContents() {
-        return new Object[][] {
+        return new Object[][]{
                 {"userInfoMenu", "Infos utilisateur"},
                 {"userHistoryTablaHeader", new String[]{"État du jeu", "Niveau de jeu", "Date & heure"}},
                 {"deleteUser", "Supprimer vos données utilisateur"},
                 {"deleteUserMessage", "Voulez-vous vraiment supprimer votre historique de jeu?!?"},
                 {"deleteUserRespond", new String[]{"Oui", "Non"}},
                 {"helpMenu", "Aide"},
+                {"aboutUs", "développé par Reza Ai."},
+                {"aboutUsMenu", "Qui sommes-nous"},
                 {"controlKeys", "Touches de contrôle de base"},
                 {"jumpKeyLabel", "Appuyez sur la touche Espace pour sauter"},
                 {"resetKeyLabel", "Appuyez sur Entrée pour arrêter le jeu"},
@@ -21,8 +23,8 @@ public class LanguageResource_fr_FR extends ListResourceBundle {
                 {"settingLabel", "Paramètre"},
                 {"themeLabel", "Choisissez votre thème"},
                 {"levelLabel", "Choisir le niveau de jeu"},
-                {"themeList", new String[] { "Lumière", "Sombre" , "Hiver"}},
-                {"gameLevelList", new String[] { "Premier niveau", "Deuxième niveau" , "Troisième niveau" , "Niveau final"}},
+                {"themeList", new String[]{"Lumière", "Sombre", "Hiver"}},
+                {"gameLevelList", new String[]{"Premier niveau", "Deuxième niveau", "Troisième niveau", "Niveau final"}},
                 {"windowsTitle", "Happy Bird (Oiseau Joyeux)"},
                 {"mosquitosNumberLabel", "{0,number} moustiques restants"},
                 {"lostLabel", "PERDU"},

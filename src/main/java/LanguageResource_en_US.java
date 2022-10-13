@@ -11,6 +11,8 @@ public class LanguageResource_en_US extends ListResourceBundle {
                 {"deleteUserMessage", "Do you really want to delete your game history ?!?"},
                 {"deleteUserRespond", new String[]{"Yse", "No"}},
                 {"helpMenu", "Help"},
+                {"aboutUs", "developed by Reza Ali."},
+                {"aboutUsMenu", "About Us"},
                 {"controlKeys", "Basic Control Keys"},
                 {"jumpKeyLabel", "Press Space key to jump"},
                 {"resetKeyLabel", "Press Enter to rest game"},

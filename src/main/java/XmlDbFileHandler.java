@@ -12,11 +12,15 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ResourceBundle;
 
 public class XmlDbFileHandler {
 
-    private File inputFile = new File(getPath());
+    private File inputFile = new File("src/main/resources/userDatabase.xml");
+
+    private URI uri;
     private static DocumentBuilderFactory dbFactory;
     private static DocumentBuilder dBuilder;
     private static Document doc;
@@ -52,7 +56,7 @@ public class XmlDbFileHandler {
             //StreamResult consoleResult = new StreamResult(System.out);
             //transformer.transform(source, consoleResult);
 
-            StreamResult result = new StreamResult(new File(getPath()));
+            StreamResult result = new StreamResult(inputFile);
             transformer.transform(source, result);
 
         } catch (TransformerConfigurationException e) {
@@ -60,10 +64,6 @@ public class XmlDbFileHandler {
         } catch (TransformerException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String getPath() {
-        return "src/main/resources/userDatabase.xml";
     }
 
     protected Element getUserElementByUserId(String userId) {
@@ -74,7 +74,7 @@ public class XmlDbFileHandler {
 
             NodeList nodeList = doc.getElementsByTagName("userId");
             for (int i = 0; i < nodeList.getLength(); i++) {
-                if (nodeList.item(i).getTextContent().equals(userId) ) {
+                if (nodeList.item(i).getTextContent().equals(userId)) {
                     userElement = (Element) nodeList.item(i).getParentNode();
 
                     break;
@@ -109,7 +109,7 @@ public class XmlDbFileHandler {
             //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 
             Element userElement = getUserElementByUserId(userId);
-            if (userElement != null && userElement.getElementsByTagName("userId").item(0).getTextContent().equals(userId) ) {
+            if (userElement != null && userElement.getElementsByTagName("userId").item(0).getTextContent().equals(userId)) {
 
                 user = new User(userId);
 
@@ -150,7 +150,7 @@ public class XmlDbFileHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(user.getUserName()+"?????????????");
+
         return user;
     }
 

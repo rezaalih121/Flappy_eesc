@@ -38,8 +38,8 @@ public class OiseauMechant extends Rectangle implements Deplacable {
         int i = (int) (Math.random() * 7);
         oiseauLargeur = (oiseauLargeur == largeurEcran + i * Flappy.generateRandomNumber(100, 200)) ? (largeurEcran + i * Flappy.generateRandomNumber(100, 200)) : (largeurEcran + i * Flappy.generateRandomNumber(100, 200));
 
-        x = (int) (Math.random() + oiseauLargeur );
-        y = (int) (Math.random() * (hauteurEcran / 2) );
+        x = (int) (Math.random() + oiseauLargeur);
+        y = (int) (Math.random() * (hauteurEcran / 2));
 
         largeur = 40;
         hauteur = 40;
