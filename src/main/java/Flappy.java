@@ -250,7 +250,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
             @Override
             public void mouseExited(MouseEvent e) {
-                etat = Etat.EN_COURS;
+                reza
             }
         });
 
@@ -890,7 +890,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
             @Override
             public void mouseExited(MouseEvent e) {
-                etat = Etat.EN_COURS;
+
             }
         });
     }
