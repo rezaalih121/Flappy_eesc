@@ -250,7 +250,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
             @Override
             public void mouseExited(MouseEvent e) {
-                reza
+
             }
         });
 
@@ -616,7 +616,12 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 moustique1.dessiner(dessin, this);
             }
             //affichage HUD
-            dessin.setColor(Color.BLACK);
+            if (currentLevel == 1 || currentLevel == 2 || currentLevel == 3 || currentTheme == 1 || currentTheme == 2) {
+                dessin.setColor(Color.WHITE);
+            } else {
+                dessin.setColor(Color.BLACK);
+            }
+
             dessin.setFont(police);
             dessin.drawString(MessageFormat.format(bundle.getString("mosquitosNumberLabel"), point), largeurEcran - 221, 50);
 
