@@ -737,6 +737,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             setGameLevel(gameLevel);
             if (Etat.GAGNE == etat) {
                 curentUser.addUserHistory(new UserHistory(bundle.getString("wonLebel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
+                if (currentLevel < 4)
+                    currentLevel++;
             } else if (Etat.PERDU == etat) {
                 curentUser.addUserHistory(new UserHistory(bundle.getString("lostLabel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
             }
