@@ -34,7 +34,9 @@ public class LanguageResource_en_US extends ListResourceBundle {
                 {"welcomeLabel", "Welcome To Happy Bird Game"},
                 {"welcomeUserLabel", "Enter your Username or a new Username to register please"},
                 {"welcomeMessageLabel", "Type only letters (a-z or A-Z) for username."},
-                {"loginButton", "Start"}
+                {"loginButton", "Start"},
+                {"loginExit", "Close"},
+                {"exitAlertMessage", "Do you really want to exit ?!? :-(  "}
         };
     }
 }

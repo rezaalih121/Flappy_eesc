@@ -33,7 +33,9 @@ public class LanguageResource_fr_FR extends ListResourceBundle {
                 {"welcomeLabel", "Bienvenue dans le jeu Happy Bird (Oiseau Joyeux)"},
                 {"welcomeUserLabel", "Entrez votre nom d'utilisateur ou un nouveau nom d'utilisateur pour vous inscrire"},
                 {"welcomeMessageLabel", "Tapez uniquement des lettres (a-z or A-Z) pour le nom d'utilisateur."},
-                {"loginButton", "Démarrer"}
+                {"loginButton", "Démarrer"},
+                {"loginExit", "Fermer"},
+                {"exitAlertMessage", "Voulez-vous vraiment quitter?!? :-("}
         };
     }
 }

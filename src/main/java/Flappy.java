@@ -188,13 +188,13 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         JLabel userInfoLabel = new JLabel();
         userInfoLabel.setFont(new Font("Arial", Font.BOLD, 21));
 
-        userInfoDialog.add(FormCreator.generateRow(userInfoLabel, 10, 10, 10, 10, FormCreator.ALIGN_LEFT), BorderLayout.NORTH);
+        userInfoDialog.add(FormCreator.generateRow(userInfoLabel, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.NORTH);
 
         TableHandler tableHandler = new TableHandler();
         JPanel jPanelTable = new JPanel(new BorderLayout());
         jPanelTable.add(FormCreator.generateRow(tableHandler.getTableHeader(), 0, 0, 0, 0, 0), BorderLayout.NORTH);
         jPanelTable.add(FormCreator.generateRow(tableHandler, 0, 0, 0, 0, 0), BorderLayout.CENTER);
-        userInfoDialog.add(FormCreator.generateRow(jPanelTable, 10, 10, 10, 10, FormCreator.ALIGN_RIGHT), BorderLayout.CENTER);
+        userInfoDialog.add(FormCreator.generateRow(jPanelTable, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.CENTER);
 
         JButton deleteUserInfoButton = new JButton(bundle.getString("deleteUser"));
         deleteUserInfoButton.addActionListener(e -> {
@@ -215,7 +215,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
 
         });
-        userInfoDialog.add(FormCreator.generateField(null, deleteUserInfoButton, 70), BorderLayout.SOUTH);
+        userInfoDialog.add(FormCreator.generateRow(deleteUserInfoButton, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.SOUTH);
+        
         deleteUserInfoButton.setAlignmentX(CENTER_ALIGNMENT);
         JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
         addMouseEnteredExitedListener(jMenuBar);
@@ -392,6 +393,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         JTextField loginTextField = new JTextField();
         loginTextField.setMaximumSize(new Dimension(121, 20));
         JButton loginButton = new JButton(bundle.getString("loginButton"));
+        JButton exitButton = new JButton(bundle.getString("loginExit"));
         loginTextField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -427,7 +429,15 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         });
 
         loginLabel.setLabelFor(loginTextField);
+        exitButton.addActionListener(e->{
+            if (JOptionPane.showOptionDialog(welcomeDialog, bundle.getString("exitAlertMessage"), bundle.getString("exitAlertMessage"), JOptionPane.YES_NO_OPTION, JOptionPane.YES_NO_OPTION, null, bundle.getStringArray("deleteUserRespond"), 0) == 0) {
+                welcomeDialog.setVisible(false);
+                fenetre.dispose();
+                System.exit(0);
+            }else{
 
+            }
+        });
         loginButton.addActionListener(e -> {
 
             if (loginTextField.getText().length() > 0) {
@@ -448,15 +458,18 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
 
         welcomeDialog.setIconImage(img);
+        Box boxFormulaire = Box.createVerticalBox();
+        welcomeDialog.add(boxFormulaire, BorderLayout.CENTER);
+        boxFormulaire.add(FormCreator.generateRow(welcomeLabel, 10, 10, 10, 10, FormCreator.ALIGN_CENTER));
+        boxFormulaire.add(FormCreator.generateField(loginLabel, loginTextField, 40),CENTER_ALIGNMENT);
+        boxFormulaire.add(FormCreator.generateRow(new JLabel(), 10, 10, 10, 10, FormCreator.ALIGN_CENTER));
 
-        welcomeDialog.add(FormCreator.generateRow(welcomeLabel, 10, 10, 10, 10, FormCreator.ALIGN_LEFT), BorderLayout.NORTH);
-        welcomeDialog.add(FormCreator.generateField(loginLabel, loginTextField, 10), BorderLayout.CENTER);
-
-        welcomeDialog.add(FormCreator.generateField(null, loginButton, 40), BorderLayout.EAST);
-        welcomeDialog.add(FormCreator.generateRow(loginMessageLabel, 10, 10, 10, 10, FormCreator.ALIGN_LEFT), BorderLayout.SOUTH);
+        boxFormulaire.add(FormCreator.generateField(loginButton,exitButton , 20),CENTER_ALIGNMENT);
+        boxFormulaire.add(FormCreator.generateRow(loginMessageLabel, 10, 10, 10, 10, FormCreator.ALIGN_CENTER));
 
 
-        welcomeDialog.setSize(400, 200);
+
+        welcomeDialog.setSize(350, 200);
         welcomeDialog.setVisible(false);
         welcomeDialog.setFocusableWindowState(true);
         welcomeDialog.setResizable(false);
