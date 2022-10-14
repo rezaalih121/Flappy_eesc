@@ -57,13 +57,11 @@ public class TableHandler extends JTable implements ActionListener {
         }
         DefaultTableModel model = new DefaultTableModel(data, column);
         this.setModel(model);
+        model.fireTableDataChanged();
         this.setShowGrid(true);
         this.setShowVerticalLines(true);
         this.getScrollableTracksViewportHeight();
         this.setAutoscrolls(true);
-        //this.setBounds(0, 0, 500, 300);
-        //this.setSize(500, 300);
-        this.repaint();
         return this;
     }
 

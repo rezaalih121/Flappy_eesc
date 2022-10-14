@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="Flappy_eesc:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Flappy_eesc_jar</output-path>
-    <root id="archive" name="Flappy_eesc_jar.jar">
+  <artifact type="jar" name="Flappy_eesc:jar3">
+    <output-path>$PROJECT_DIR$/out/artifacts/Flappy_eesc_jar3</output-path>
+    <root id="archive" name="Flappy_eesc.jar">
       <element id="module-output" name="Flappy_eesc" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/flatlaf/2.5/flatlaf-2.5.jar" path-in-jar="/" />
       <element id="directory" name="src">

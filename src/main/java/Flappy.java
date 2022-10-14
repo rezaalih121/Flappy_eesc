@@ -2,13 +2,16 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -191,9 +194,11 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         userInfoDialog.add(FormCreator.generateRow(userInfoLabel, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.NORTH);
 
         TableHandler tableHandler = new TableHandler();
+        tableHandler.setEnabled(false);
+
+        JScrollPane jScrollPane = new JScrollPane(tableHandler);
         JPanel jPanelTable = new JPanel(new BorderLayout());
-        jPanelTable.add(FormCreator.generateRow(tableHandler.getTableHeader(), 0, 0, 0, 0, 0), BorderLayout.NORTH);
-        jPanelTable.add(FormCreator.generateRow(tableHandler, 0, 0, 0, 0, 0), BorderLayout.CENTER);
+        jPanelTable.add(FormCreator.generateRow(jScrollPane, 0, 0, 0, 0, 0), BorderLayout.CENTER);
         userInfoDialog.add(FormCreator.generateRow(jPanelTable, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.CENTER);
 
         JButton deleteUserInfoButton = new JButton(bundle.getString("deleteUser"));
@@ -216,7 +221,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
         });
         userInfoDialog.add(FormCreator.generateRow(deleteUserInfoButton, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.SOUTH);
-        
+
         deleteUserInfoButton.setAlignmentX(CENTER_ALIGNMENT);
         JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
         addMouseEnteredExitedListener(jMenuBar);
@@ -226,7 +231,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 tableHandler.setCurentUser(curentUser);
                 tableHandler.setBundle(bundle);
                 tableHandler.setTable();
-                tableHandler.repaint();
                 userInfoLabel.repaint();
                 deleteUserInfoButton.repaint();
                 userInfoDialog.repaint();
@@ -429,12 +433,12 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         });
 
         loginLabel.setLabelFor(loginTextField);
-        exitButton.addActionListener(e->{
+        exitButton.addActionListener(e -> {
             if (JOptionPane.showOptionDialog(welcomeDialog, bundle.getString("exitAlertMessage"), bundle.getString("exitAlertMessage"), JOptionPane.YES_NO_OPTION, JOptionPane.YES_NO_OPTION, null, bundle.getStringArray("deleteUserRespond"), 0) == 0) {
                 welcomeDialog.setVisible(false);
                 fenetre.dispose();
                 System.exit(0);
-            }else{
+            } else {
 
             }
         });
@@ -461,12 +465,11 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         Box boxFormulaire = Box.createVerticalBox();
         welcomeDialog.add(boxFormulaire, BorderLayout.CENTER);
         boxFormulaire.add(FormCreator.generateRow(welcomeLabel, 10, 10, 10, 10, FormCreator.ALIGN_CENTER));
-        boxFormulaire.add(FormCreator.generateField(loginLabel, loginTextField, 40),CENTER_ALIGNMENT);
+        boxFormulaire.add(FormCreator.generateField(loginLabel, loginTextField, 40), CENTER_ALIGNMENT);
         boxFormulaire.add(FormCreator.generateRow(new JLabel(), 10, 10, 10, 10, FormCreator.ALIGN_CENTER));
 
-        boxFormulaire.add(FormCreator.generateField(loginButton,exitButton , 20),CENTER_ALIGNMENT);
+        boxFormulaire.add(FormCreator.generateField(loginButton, exitButton, 20), CENTER_ALIGNMENT);
         boxFormulaire.add(FormCreator.generateRow(loginMessageLabel, 10, 10, 10, 10, FormCreator.ALIGN_CENTER));
-
 
 
         welcomeDialog.setSize(350, 200);
@@ -513,6 +516,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         AudioInputStream audioIn = null;
         try {
             File f = new File(filesPath + soundFile);
+            //URL url = Class.class.getResource(filesPath + soundFile);
             //System.out.println(filesPath + soundFile);
             audioIn = AudioSystem.getAudioInputStream(f);
 
@@ -528,6 +532,20 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         } catch (UnsupportedAudioFileException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public BufferedImage loadImage(String fileName) {
+
+        BufferedImage buff = null;
+        try {
+            buff = ImageIO.read(getClass().getResourceAsStream(fileName));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+        return buff;
+
     }
 
     public void initialiser() {
@@ -756,9 +774,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 curentUser.addUserHistory(new UserHistory(bundle.getString("lostLabel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
             }
 
-            initialiser();
+
             setGameLevel(currentLevel);
             setWindowsTheme(currentTheme);
+            initialiser();
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {
             etat = etat == Etat.PAUSE ? Etat.EN_COURS : Etat.PAUSE;
@@ -827,10 +846,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         largeurEcran = this.getWidth();
         hauteurEcran = this.getHeight();
         windowsResized = true;
-
-        initialiser();
         setGameLevel(currentLevel);
         setWindowsTheme(currentTheme);
+        initialiser();
+
 
     }
 
