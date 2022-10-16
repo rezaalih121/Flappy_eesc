@@ -1,24 +1,106 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><happyBirdDb>
     <user ID="reza">
         <userId>reza</userId>
+
+
         
-    <userHistory><gameResult>GAGNÉ</gameResult><datePlayed>14/10/2022 14:58:15</datePlayed><gameLevel>Niveau final</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>14/10/2022 14:58:15</datePlayed><gameLevel>Deuxième niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>14/10/2022 14:58:15</datePlayed><gameLevel>Troisième niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>14/10/2022 14:58:15</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>14/10/2022 14:58:15</datePlayed><gameLevel>Niveau final</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>14/10/2022 14:58:15</datePlayed><gameLevel>Deuxième niveau</gameLevel></userHistory></user>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    <userHistory><gameResult>LOST</gameResult><datePlayed>15/10/2022 22:08:31</datePlayed><gameLevel>First Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>15/10/2022 22:08:31</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>15/10/2022 22:08:31</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>First Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>15/10/2022 22:08:31</datePlayed><gameLevel>First Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>15/10/2022 22:08:31</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>First Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>15/10/2022 22:08:31</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 09:34:20</datePlayed><gameLevel>First Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>First Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>LOST</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Third Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory><userHistory><gameResult>WON</gameResult><datePlayed>16/10/2022 17:01:49</datePlayed><gameLevel>Final Level</gameLevel></userHistory></user>
     <user userId="ali">
         <userId>ali</userId>
 
 
-        
-        
-        
         <userHistory>
             <gameResult>GAGNÉ</gameResult>
             <datePlayed>2022/10/11 10:10:20</datePlayed>
             <gameLevel>Premier niveau</gameLevel>
         </userHistory>
-        
-        
-        
-    <userHistory><gameResult>PERDU</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>PERDU</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>2022/10/11 16:50:53</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>PERDU</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>PERDU</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>PERDU</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>GAGNÉ</gameResult><datePlayed>2022/10/11 16:50:53</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>PERDU</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory><userHistory><gameResult>PERDU</gameResult><datePlayed>2022/10/11 10:10:20</datePlayed><gameLevel>Premier niveau</gameLevel></userHistory></user>
+
+
+        <userHistory>
+            <gameResult>PERDU</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>PERDU</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>GAGNÉ</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>GAGNÉ</gameResult>
+            <datePlayed>2022/10/11 16:50:53</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>PERDU</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>GAGNÉ</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>GAGNÉ</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>GAGNÉ</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>PERDU</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>PERDU</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>GAGNÉ</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>GAGNÉ</gameResult>
+            <datePlayed>2022/10/11 16:50:53</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>PERDU</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>PERDU</gameResult>
+            <datePlayed>2022/10/11 10:10:20</datePlayed>
+            <gameLevel>Premier niveau</gameLevel>
+        </userHistory>
+    </user>
     <user userId="tom">
         <userId>tom</userId>
         <userHistory>
@@ -27,20 +109,46 @@
             <gameLevel>Premier niveau</gameLevel>
         </userHistory>
     </user>
-    <user userId="dddddd">
-        <userId>dddddd</userId>
-        <userHistory>
-            <gameResult>LOST</gameResult>
-            <datePlayed>11/10/2022 21:51:28</datePlayed>
-            <gameLevel>First Level</gameLevel>
-        </userHistory>
-        <userHistory>
-            <gameResult>LOST</gameResult>
-            <datePlayed>11/10/2022 22:14:12</datePlayed>
-            <gameLevel>First Level</gameLevel>
-        </userHistory>
-    </user>
+
     <user userId="dd">
         <userId>dd</userId>
     </user>
-</happyBirdDb>
+    <user userId="Sophie">
+        <userId>Sophie</userId>
+        <userHistory>
+            <gameResult>WON</gameResult>
+            <datePlayed>15/10/2022 20:14:15</datePlayed>
+            <gameLevel>First Level</gameLevel>
+        </userHistory>
+    </user>
+    <user userId="rezaali">
+        <userId>rezaali</userId>
+
+
+        <userHistory>
+            <gameResult>LOST</gameResult>
+            <datePlayed>15/10/2022 21:39:44</datePlayed>
+            <gameLevel>First Level</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>LOST</gameResult>
+            <datePlayed>15/10/2022 21:40:51</datePlayed>
+            <gameLevel>Third Level</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>LOST</gameResult>
+            <datePlayed>15/10/2022 22:13:00</datePlayed>
+            <gameLevel>First Level</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>LOST</gameResult>
+            <datePlayed>15/10/2022 22:13:00</datePlayed>
+            <gameLevel>First Level</gameLevel>
+        </userHistory>
+        <userHistory>
+            <gameResult>WON</gameResult>
+            <datePlayed>15/10/2022 22:13:00</datePlayed>
+            <gameLevel>First Level</gameLevel>
+        </userHistory>
+    </user>
+<user userId="sophie"><userId>sophie</userId></user></happyBirdDb>

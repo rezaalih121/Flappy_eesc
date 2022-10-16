@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,16 +23,12 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     protected User curentUser;
     protected static int largeurEcran = 600;
     protected static int hauteurEcran = 600;
-
     protected boolean windowsResized = false;
-
     protected Oiseau oiseau;
     protected Tuyau tuyau;
     protected Moustique moustique;
-
     protected int tuyauLargeur;
     protected long point = 0;
-    protected int tuyauHauteur;
     protected int nombreDeMoustique;
     protected int nombreDeMechantOiseau;
     protected int nombreDeNuage;
@@ -40,23 +37,19 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     LocalDateTime localDateTime = LocalDateTime.now();
     protected int textWidth = 0;
     protected Toolkit toolkit = Toolkit.getDefaultToolkit();
-    JLabel jLabelBackground = null;
-
     protected ArrayList<Deplacable> listDeplacable = new ArrayList<>();
     protected ArrayList<Sprite> listSprite = new ArrayList<>();
     protected ArrayList<Moustique> listMoustique = new ArrayList<>();
-
     private static final Random RANDOMISER = new Random();
-
     protected Etat etat = Etat.PAUSE;
-
     protected JDialog welcomeDialog, userInfoDialog, settingDialog;
-
     protected XmlDbFileHandler xmlDbFileHandler;
+
+    protected UserDataFileHandler userDataFileHandler;
     protected Image backgroundImage;
     protected JMenuBar jMenuBar;
     protected String filesPath = "src/main/resources/";
-
+    protected SoundHandler soundHandler = new SoundHandler(filesPath);
     //loading locale language
     private static final int DEFAULT_LOCALE = 0;
     private ResourceBundle bundle;
@@ -68,39 +61,32 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     private int currentTheme = 0;
     private int currentLevel = 0;
 
+    //---------- Function to create a random number between 2 specified numbers ---------
     public static int generateRandomNumber(int from, int to) {
         return RANDOMISER.nextInt((to + 1) - from) + from;
     }
 
+    //----------- Function to set windows theme  ------------
     public void setWindowsTheme(int theme) {
         try {
             currentTheme = theme;
             if (theme == 0) {
                 UIManager.setLookAndFeel(new FlatLightLaf());
-
-                toolkit = Toolkit.getDefaultToolkit();
-                backgroundImage = toolkit.getImage(filesPath + "background.jpg");
-                jMenuBar.repaint();
+                backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("background.jpg"));
             } else if (theme == 1) {
                 UIManager.setLookAndFeel(new FlatDarkLaf());
-
-                toolkit = Toolkit.getDefaultToolkit();
-                backgroundImage = toolkit.getImage(filesPath + "NightBackground.jpg");
-                jMenuBar.repaint();
+                backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("NightBackground.jpg"));
             } else if (theme == 2) {
                 UIManager.setLookAndFeel(new FlatDarculaLaf());
-
-                toolkit = Toolkit.getDefaultToolkit();
-                backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
-                jMenuBar.repaint();
-
+                backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("WinterBackground.jpg"));
             }
+            jMenuBar.repaint();
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
     }
-
+    //----------- Function to set the current game level ------------
     public void setGameLevel(int level) {
         currentLevel = level;
         try {
@@ -110,34 +96,28 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 nombreDeMechantOiseau = 3;
                 nombreDeNuage = 10;
                 UIManager.setLookAndFeel(new FlatLightLaf());
-                toolkit = Toolkit.getDefaultToolkit();
-                backgroundImage = toolkit.getImage(filesPath + "background.jpg");
+                backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("background.jpg"));
             } else if (level == 1) {
                 nombreDeMoustique = generateRandomNumber(20, 30);
                 nombreDeMechantOiseau = 5;
                 nombreDeNuage = 14;
                 UIManager.setLookAndFeel(new FlatDarculaLaf());
-                toolkit = Toolkit.getDefaultToolkit();
-                backgroundImage = toolkit.getImage(filesPath + "NightBackground.jpg");
+                backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("NightBackground.jpg"));
 
             } else if (level == 2) {
                 nombreDeMoustique = generateRandomNumber(30, 40);
                 nombreDeMechantOiseau = 7;
                 nombreDeNuage = 21;
                 UIManager.setLookAndFeel(new FlatDarculaLaf());
-                toolkit = Toolkit.getDefaultToolkit();
-                backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
+                backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("WinterBackground.jpg"));
 
             } else if (level == 3) {
                 nombreDeMoustique = generateRandomNumber(40, 50);
                 nombreDeMechantOiseau = 14;
                 nombreDeNuage = 27;
                 UIManager.setLookAndFeel(new FlatDarculaLaf());
-                toolkit = Toolkit.getDefaultToolkit();
-                backgroundImage = toolkit.getImage(filesPath + "WinterBackground.jpg");
-
+                backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("WinterBackground.jpg"));
             }
-
             SwingUtilities.updateComponentTreeUI(this);
             this.repaint();
         } catch (Exception ex) {
@@ -146,23 +126,28 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     }
 
     public Flappy() throws InterruptedException {
+
+        
         FlatLightLaf.setup();
-        //loading locale language
+
+        //----------- Set the default local language ------------
         for (Locale locale1 : supportedLocales) {
             if (locale1.getLanguage().equals(Locale.getDefault().getLanguage())) {
-                //System.out.println(locale1.toString());
                 locale = locale1;
                 break;
             } else {
                 locale = supportedLocales[DEFAULT_LOCALE];
-                //System.out.println(locale1.toString());
             }
         }
 
         bundle = ResourceBundle.getBundle("LanguageResource", locale);
 
-        xmlDbFileHandler = new XmlDbFileHandler(bundle);
+        //----------- Loading application Database from both an xml and a serialised file ------------
 
+        xmlDbFileHandler = new XmlDbFileHandler(bundle);
+        userDataFileHandler =new UserDataFileHandler();
+
+        //----------- Setting up main window ------------
         JFrame fenetre = new JFrame(bundle.getString("windowsTitle"));
         //On récupère le panneau de la fenetre principale
         JPanel panneau = (JPanel) fenetre.getContentPane();
@@ -171,14 +156,15 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         setBounds(0, 0, largeurEcran, hauteurEcran);
         //On ajoute cette classe (qui hérite de Canvas) comme composant du panneau principal
         panneau.add(this);
-        toolkit = Toolkit.getDefaultToolkit();
-        backgroundImage = toolkit.getImage(filesPath + "background.jpg");
-        Image img = toolkit.getImage(filesPath + "bird.png");
+        backgroundImage = toolkit.getImage(this.getClass().getClassLoader().getResource("background.jpg"));
+        Image img = toolkit.getImage(this.getClass().getClassLoader().getResource("bird.png"));
 
 
+        //----------- Setting up window's menu ------------
         jMenuBar = new JMenuBar();
         addMouseEnteredExitedListener(jMenuBar);
 
+        //----------- Setting up user game history page ------------
         userInfoDialog = new JDialog(fenetre, bundle.getString("userInfoMenu"));
         userInfoDialog.setVisible(false);
         userInfoDialog.setFocusableWindowState(true);
@@ -192,15 +178,16 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         userInfoLabel.setFont(new Font("Arial", Font.BOLD, 21));
 
         userInfoDialog.add(FormCreator.generateRow(userInfoLabel, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.NORTH);
-
+        //----------- Loading a table with user game history ------------
         TableHandler tableHandler = new TableHandler();
-        tableHandler.setEnabled(false);
+        tableHandler.setEnabled(true);
 
         JScrollPane jScrollPane = new JScrollPane(tableHandler);
         JPanel jPanelTable = new JPanel(new BorderLayout());
         jPanelTable.add(FormCreator.generateRow(jScrollPane, 0, 0, 0, 0, 0), BorderLayout.CENTER);
         userInfoDialog.add(FormCreator.generateRow(jPanelTable, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.CENTER);
 
+        //----------- A button to delete all user game history data ------------
         JButton deleteUserInfoButton = new JButton(bundle.getString("deleteUser"));
         deleteUserInfoButton.addActionListener(e -> {
             String[] choices = bundle.getStringArray("deleteUserRespond");
@@ -208,7 +195,9 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             if (JOptionPane.showOptionDialog(userInfoDialog, bundle.getString("deleteUserMessage"), bundle.getString("deleteUserMessage"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, choices, defaultChoice) == JOptionPane.YES_OPTION) {
                 curentUser.deleteUserHistoriesList();
                 xmlDbFileHandler.deleteUserGameHistory(curentUser);
+                userDataFileHandler.deleteUserGameHistory(curentUser);
                 curentUser = xmlDbFileHandler.getUserFromXmlFile(curentUser.userName);
+                curentUser = userDataFileHandler.getUserFromFileStream(curentUser.userName);
                 curentUser.getUserHistoriesList();
                 //System.out.println(curentUser.getUserHistoriesList().size());
                 tableHandler.setCurentUser(curentUser);
@@ -217,12 +206,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 tableHandler.repaint();
                 userInfoDialog.repaint();
             }
-
-
         });
         userInfoDialog.add(FormCreator.generateRow(deleteUserInfoButton, 10, 10, 10, 10, FormCreator.ALIGN_CENTER), BorderLayout.SOUTH);
-
         deleteUserInfoButton.setAlignmentX(CENTER_ALIGNMENT);
+        
         JMenu jMenuUserInfo = new JMenu(bundle.getString("userInfoMenu"));
         addMouseEnteredExitedListener(jMenuBar);
         jMenuUserInfo.addMouseListener(new MouseListener() {
@@ -235,9 +222,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 deleteUserInfoButton.repaint();
                 userInfoDialog.repaint();
                 userInfoDialog.setVisible(true);
-
             }
-
             @Override
             public void mousePressed(MouseEvent e) {
 
@@ -273,7 +258,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             });
             jMenuItemTheme.add(jSubMenuTheme);
         }
-
         jMenuSetting.add(jMenuItemTheme);
 
         jMenuSetting.addSeparator();
@@ -292,8 +276,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         }
 
         jMenuSetting.add(jMenuItemLevel);
-
-
         JMenu jMenuHelp = new JMenu(bundle.getString("helpMenu"));
         addMouseEnteredExitedListener(jMenuHelp);
         JMenuItem gameControlsMenu = new JMenuItem(bundle.getString("controlKeys"));
@@ -307,8 +289,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         aboutUsMenu.addActionListener(e -> {
             JOptionPane.showMessageDialog(fenetre, bundle.getString("windowsTitle") + " " + bundle.getString("aboutUs"), bundle.getString("aboutUsMenu"), JOptionPane.INFORMATION_MESSAGE);
         });
-
-
         gameControlsMenu.addActionListener(e -> {
             JOptionPane.showMessageDialog(
                     fenetre,
@@ -321,8 +301,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     bundle.getString("helpMenu"), JOptionPane.INFORMATION_MESSAGE
             );
         });
-
-
         JMenu jMenuLanguage = new JMenu(bundle.getString("languageMenu") + " : " + locale.getDisplayLanguage());
         addMouseEnteredExitedListener(jMenuLanguage);
         JMenuItem jMenuItemEn = new JMenuItem(supportedLocales[0].getDisplayLanguage());
@@ -368,8 +346,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             deleteUserInfoButton.repaint();
             jMenuItemLevel.repaint();
             userInfoLabel.repaint();
-
-
         });
 
 
@@ -448,6 +424,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 etat = Etat.EN_COURS;
 
                 curentUser = xmlDbFileHandler.getUserFromXmlFile(loginTextField.getText());
+                curentUser = userDataFileHandler.getUserFromFileStream(loginTextField.getText());
+
                 userInfoLabel.setText(bundle.getString("userNameLabel") + " : " + curentUser.getUserName());
                 welcomeDialog.setVisible(false);
                 //if (JOptionPane.showOptionDialog(welcomeDialog, bundle.getString("welcomeLabel") + "  " + curentUser.getUserName(), bundle.getString("welcomeLabel"), JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null) == JOptionPane.OK_OPTION)
@@ -459,7 +437,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
 
         });
-
 
         welcomeDialog.setIconImage(img);
         Box boxFormulaire = Box.createVerticalBox();
@@ -500,40 +477,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         createBufferStrategy(2);
         setIgnoreRepaint(true);
         this.setFocusable(false);
-
-
         demarrer();
     }
 
-    private void initComponents() {
-
-
-    }
-
-    void playSound(String soundFile) {
-        soundFile = "bk_island_ambience_02.wav";
-
-        AudioInputStream audioIn = null;
-        try {
-            File f = new File(filesPath + soundFile);
-            //URL url = Class.class.getResource(filesPath + soundFile);
-            //System.out.println(filesPath + soundFile);
-            audioIn = AudioSystem.getAudioInputStream(f);
-
-            Clip clip = null;
-
-            clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.loop(1);//Clip.LOOP_CONTINUOUSLY);
-        } catch (LineUnavailableException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedAudioFileException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    // TODO loading images using bufferd Image later 
     public BufferedImage loadImage(String fileName) {
 
         BufferedImage buff = null;
@@ -549,7 +496,10 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     }
 
     public void initialiser() {
-        playSound("");
+        soundHandler.playSound("startSound.wav", false);
+
+        setWindowsTheme(currentTheme);
+        setGameLevel(currentLevel);
         // Si cest la premiere initialisation
         etat = Etat.EN_COURS;
         point = 0;
@@ -572,7 +522,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             listDeplacable.add(oiseau);
             listSprite.add(oiseau);
 
-            setGameLevel(gameLevel);
 
             for (int i = 0; i < nombreDeMoustique; i++) {
                 moustique = new Moustique(largeurEcran, hauteurEcran);
@@ -593,7 +542,9 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
             }
         } else {
-            setGameLevel(gameLevel);
+
+            setWindowsTheme(currentTheme);
+            setGameLevel(currentLevel);
             listMoustique = new ArrayList<>();
             point = 0;
             for (int i = 0; i < nombreDeMoustique; i++) {
@@ -614,8 +565,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     public void demarrer() throws InterruptedException {
 
         long indexFrame = 0;
-
-
         initialiser();
         etat = Etat.PAUSE;
         Font police = new Font("Calibri", Font.BOLD, 24);
@@ -662,6 +611,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     // si jamais l oiseau est tombe par terre
                     //System.out.println("perdu");
                     etat = Etat.PERDU;
+                    soundHandler.playSound("sl02_wav.wav", false);
 
                 } else {
 
@@ -669,7 +619,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     //oiseau.deplacer(largeurEcran, hauteurEcran);
                     tuyau.deplacer(largeurEcran, hauteurEcran);
                     moustique.deplacer(largeurEcran, hauteurEcran);
-
 
                     for (Deplacable deplacable : listDeplacable) {
                         if (listDeplacable.indexOf(deplacable) % 2 != 0)
@@ -683,6 +632,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                         if (listSprite.get(i) instanceof Tuyau || listSprite.get(i) instanceof OiseauMechant) {
                             if (Sprite.testCollision(oiseau, listSprite.get(i))) {
                                 etat = Etat.PERDU;
+                                soundHandler.playSound("hit_someone.wav", false);
                             }
                         }
                     }
@@ -691,9 +641,11 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
                         if (Sprite.testCollision(oiseau, listMoustique.get(i))) {
                             point--;
+                            soundHandler.playSound("eatingMostique.wav", false);
                             listMoustique.remove(i);
                             if (point == 0) {
                                 etat = Etat.GAGNE;
+                                soundHandler.playSound("won_wav1.wav", false);
                             }
                         }
 
@@ -708,7 +660,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     dessin.setFont(alert);
                     dessin.drawString(bundle.getString("pauseLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
                 } else if (etat == Etat.PERDU) {
-
+                    //soundHandler.playSound("perdu1_wav.wav");
                     dessin.setColor(Color.yellow);
                     dessin.setFont(alert);
                     dessin.drawString(bundle.getString("lostLabel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
@@ -720,10 +672,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                     dessin.setFont(alert);
                     dessin.drawString(bundle.getString("wonLebel"), largeurEcran / 2 - textWidth / 2, hauteurEcran / 2);
 
-
                 }
             }
-            //-----------------------------
             dessin.dispose();
             getBufferStrategy().show();
             Thread.sleep(1000 / 60);
@@ -763,20 +713,21 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             oiseau.setVitesseVertical(2);
+            if (oiseau.getY() > hauteurEcran / 2 )
+                soundHandler.playSound("happyBird.wav", false);
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             setGameLevel(gameLevel);
             if (Etat.GAGNE == etat) {
                 curentUser.addUserHistory(new UserHistory(bundle.getString("wonLebel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
-                if (currentLevel < 4)
+                if (currentLevel < 3)
                     currentLevel++;
             } else if (Etat.PERDU == etat) {
                 curentUser.addUserHistory(new UserHistory(bundle.getString("lostLabel"), dateTimeFormatter.format(localDateTime), bundle.getStringArray("gameLevelList")[gameLevel]));
             }
 
-
-            setGameLevel(currentLevel);
             setWindowsTheme(currentTheme);
+            setGameLevel(currentLevel);
             initialiser();
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {
@@ -784,7 +735,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         }
 
     }
-
     boolean dragged = false;
 
     @Override
@@ -849,8 +799,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         setGameLevel(currentLevel);
         setWindowsTheme(currentTheme);
         initialiser();
-
-
     }
 
     @Override
@@ -878,6 +826,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     @Override
     public void windowClosing(WindowEvent e) {
         xmlDbFileHandler.updateUserInToXmlFile(curentUser);
+        userDataFileHandler.saveNewUserDataToFileStream(curentUser);
     }
 
     @Override

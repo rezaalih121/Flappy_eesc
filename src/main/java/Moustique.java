@@ -1,11 +1,16 @@
+import javax.sound.sampled.*;
 import java.awt.*;
 import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
 
 public class Moustique extends Rectangle implements Deplacable {
 
+    SoundHandler soundHandler = new SoundHandler("src/main/resources/");
     public Moustique(int hauteurEcran, int largeurEcran) {
         super(0, 0, 0, 0);
         reinitialiser(largeurEcran, hauteurEcran);
+
     }
 
 
@@ -19,7 +24,7 @@ public class Moustique extends Rectangle implements Deplacable {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
 
-        Image img = t.getImage("src/main/resources/mostique.png");
+        Image img = t.getImage(this.getClass().getClassLoader().getResource("mostique.png"));
 
         dessin.drawImage(img, x, y, largeur, hauteur, imageObserver);
     }
@@ -27,8 +32,10 @@ public class Moustique extends Rectangle implements Deplacable {
     @Override
     public void deplacer(int largeurEcran, int hauteurEcran) {
         x -= 1;
-        if (x < -largeur)
+        if (x < -largeur) {
+            soundHandler.playSound("mosquiteSound.wav" , false );
             reinitialiser(largeurEcran, hauteurEcran);
+        }
 
     }
 
@@ -50,4 +57,5 @@ public class Moustique extends Rectangle implements Deplacable {
         largeur = (int) (Math.random() * 10 + 30);
         hauteur = (int) (Math.random() * 10 + 20);
     }
+
 }

@@ -17,9 +17,18 @@ import java.net.URISyntaxException;
 import java.util.ResourceBundle;
 
 public class XmlDbFileHandler {
-
     private File inputFile = new File("src/main/resources/userDatabase.xml");
 
+   /* {
+        try {
+            System.out.println(">>>>"+this.getClass().getClassLoader().getResource("userDatabase.xml").toURI());
+            inputFile = new File(this.getClass().getClassLoader().getResource("userDatabase.xml").toURI());
+
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+      */
     private URI uri;
     private static DocumentBuilderFactory dbFactory;
     private static DocumentBuilder dBuilder;

@@ -20,7 +20,7 @@ public class Tuyau extends Rectangle implements Deplacable {
         dessin.setColor(couleur);
         Toolkit t = Toolkit.getDefaultToolkit();
 
-        Image img = t.getImage("src/main/resources/tuyau" + (couleur == Color.GREEN ? 1 : couleur == couleur.GRAY ? 2 : couleur == couleur.RED ? 3 : 4) + ".png");
+        Image img = t.getImage(this.getClass().getClassLoader().getResource("tuyau" + (couleur == Color.GREEN ? 1 : couleur == couleur.GRAY ? 2 : couleur == couleur.RED ? 3 : 4) + ".png"));
         //dessin.fillRect( x, y, largeur, largeur);
        /* Image img;
         try {

@@ -1,4 +1,6 @@
-public class UserHistory {
+import java.io.Serializable;
+
+public class UserHistory implements Serializable {
     protected String gameResult;
     protected String datePlayed;
     protected String gameLevel;
@@ -32,5 +34,13 @@ public class UserHistory {
 
     public void setGameLevel(String gameLevel) {
         this.gameLevel = gameLevel;
+    }
+    public Object[] getRowTable(){
+        return new Object[]{
+                getGameResult(),
+                getGameLevel(),
+                getDatePlayed(),
+                ""
+        };
     }
 }
