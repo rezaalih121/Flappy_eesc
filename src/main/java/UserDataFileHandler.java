@@ -1,3 +1,4 @@
+import javax.naming.Context;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -16,12 +17,26 @@ public class UserDataFileHandler {
     public UserDataFileHandler() {
         try {
 
-            this.userDataFileInputStream = new FileInputStream("userDataFile.raidata");
-            loadDataFromFileStream();
+            if (fileExists("userDataFile.raidata")) {
+                this.userDataFileInputStream = new FileInputStream("userDataFile.raidata");
+                loadDataFromFileStream();
+            } else {
+                isNewUser = true;
+                saveNewUserDataToFileStream(new User("FirstUserToCreateDataFile"));
+            }
+
         } catch (FileNotFoundException e) {
             System.out.println("File not exist application opened for the first time");
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean fileExists(String filename) {
+        File file = new File(filename);
+        if (file == null || !file.exists()) {
+            return false;
+        }
+        return true;
     }
 
     protected void loadDataFromFileStream() {
@@ -38,13 +53,14 @@ public class UserDataFileHandler {
         }
 
     }
+
     protected User getUserFromFileStream(String userName) {
         User currentUser = null;
-           for (User user: usersList) {
-               //System.out.println("in file "+user.getUserName() + user.getUserHistoriesList().size());
-                if(user.getUserName().equals(userName))
-                    currentUser =  user;
-            }
+        for (User user : usersList) {
+            //System.out.println("in file "+user.getUserName() + user.getUserHistoriesList().size());
+            if (user.getUserName().equals(userName))
+                currentUser = user;
+        }
         if (currentUser != null) {
             return currentUser;
         } else {
@@ -59,7 +75,7 @@ public class UserDataFileHandler {
         if (isNewUser) {
             usersList.add(user);
         } else {
-           usersList.get(usersList.indexOf(user)).setUserHistoriesList(user.getUserHistoriesList());
+            usersList.get(usersList.indexOf(user)).setUserHistoriesList(user.getUserHistoriesList());
         }
         try {
             this.userDataFileOutputStream = new FileOutputStream("userDataFile.raidata");
