@@ -25,7 +25,7 @@ public class SoundHandler {
             if(playInLoop)
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
             else
-                clip.loop(1);
+                clip.loop(0);
         } catch (LineUnavailableException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

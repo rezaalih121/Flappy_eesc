@@ -173,7 +173,6 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
         userInfoDialog.setLocationRelativeTo(fenetre);
         userInfoDialog.setLayout(new BorderLayout());
 
-
         JLabel userInfoLabel = new JLabel();
         userInfoLabel.setFont(new Font("Arial", Font.BOLD, 21));
 
@@ -497,7 +496,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
 
     public void initialiser() {
         soundHandler.playSound("startSound.wav", false);
-
+        soundHandler.playSound("mosquiteSound.wav" , false );
         setWindowsTheme(currentTheme);
         setGameLevel(currentLevel);
         // Si cest la premiere initialisation
@@ -713,8 +712,8 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             oiseau.setVitesseVertical(2);
-            if (oiseau.getY() > hauteurEcran / 2 )
-                soundHandler.playSound("happyBird.wav", false);
+            /*if (oiseau.getY() > hauteurEcran / 2 )
+                soundHandler.playSound("happyBird.wav", false);*/
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             setGameLevel(gameLevel);

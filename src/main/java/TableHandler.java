@@ -1,12 +1,11 @@
 import javax.swing.*;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ResourceBundle;
 
 public class TableHandler extends JTable implements ActionListener {
@@ -63,16 +62,30 @@ public class TableHandler extends JTable implements ActionListener {
 
         this.getColumn("Action").setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
 
-            JLabel label = new JLabel("X");
-            label.setAlignmentX(CENTER_ALIGNMENT);
-            return label;
+            Box box = Box.createHorizontalBox();
+            JLabel deleteLabel = new JLabel("X");
+            JLabel editLabel = new JLabel("E");
+            box.add(deleteLabel,LEFT_ALIGNMENT);
+            box.add(Box.createVerticalGlue());
+            box.add(Box.createHorizontalGlue());
+            box.add(editLabel,RIGHT_ALIGNMENT);
+
+            return box;
         });
         this.getColumn("Action").setCellEditor(
                 new DefaultCellEditor(new JCheckBox("checked")) {
                     public Component getTableCellEditorComponent(
                             JTable table, Object value, boolean isSelected, int row, int column) {
-                        JLabel icone = new JLabel("XX");
-                        icone.addMouseListener(new MouseListener() {
+
+                        Box box = Box.createHorizontalBox();
+                        JLabel deleteLabel = new JLabel("X");
+                        JLabel editLabel = new JLabel("E");
+                        box.add(deleteLabel,LEFT_ALIGNMENT);
+                        box.add(Box.createVerticalGlue());
+                        box.add(Box.createHorizontalGlue());
+                        box.add(editLabel,RIGHT_ALIGNMENT);
+
+                        deleteLabel.addMouseListener(new MouseListener() {
                             @Override
                             public void mouseReleased(MouseEvent e) {
                                 System.out.println(curentUser.getUserHistoriesList().remove(row));
@@ -84,10 +97,146 @@ public class TableHandler extends JTable implements ActionListener {
                             public void mouseEntered(MouseEvent e) {}
                             public void mouseExited(MouseEvent e) {}
                         });
-                        return icone;
+                        editLabel.addMouseListener(new MouseListener() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                UserHistory userHistory = curentUser.getUserHistoriesList().get(row);
+                                if (column == 3) {
+                                    setTable();
+                                }
+                            }
+
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mouseReleased(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mouseEntered(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mouseExited(MouseEvent e) {
+
+                            }
+                        });
+                        return box;
                     }
                 }
         );
+        JTextField jTextFieldGameResult = new JTextField();
+        this.getColumn(columns[0]).setCellEditor(new DefaultCellEditor(jTextFieldGameResult ){
+
+            public Component getTableCellEditorComponent(
+                    JTable table, Object value, boolean isSelected, int row, int column) {
+                jTextFieldGameResult.setText((String)value);
+
+                jTextFieldGameResult.addKeyListener(new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            UserHistory userHistory = curentUser.getUserHistoriesList().get(row);
+
+                                userHistory.setGameResult(getCellEditorValue().toString());
+                            
+                        }
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                      
+                    }
+                });
+                    
+                return jTextFieldGameResult;
+            }
+            public Object getCellEditorValue() {
+                return jTextFieldGameResult.getText();
+            }
+
+        });
+        JTextField jTextFieldGameLevel = new JTextField();
+        this.getColumn(columns[1]).setCellEditor(new DefaultCellEditor(jTextFieldGameLevel ){
+
+            public Component getTableCellEditorComponent(
+                    JTable table, Object value, boolean isSelected, int row, int column) {
+                jTextFieldGameLevel.setText((String)value);
+
+                jTextFieldGameLevel.addKeyListener(new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            UserHistory userHistory = curentUser.getUserHistoriesList().get(row);
+                            userHistory.setGameLevel(getCellEditorValue().toString());
+                        }
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                });
+
+                return jTextFieldGameLevel;
+            }
+            public Object getCellEditorValue() {
+                return jTextFieldGameLevel.getText();
+            }
+
+        });
+        JTextField jTextFieldDatePlayed = new JTextField();
+        this.getColumn(columns[2]).setCellEditor(new DefaultCellEditor(jTextFieldDatePlayed ){
+
+            public Component getTableCellEditorComponent(
+                    JTable table, Object value, boolean isSelected, int row, int column) {
+                jTextFieldDatePlayed.setText((String)value);
+
+                jTextFieldDatePlayed.addKeyListener(new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            UserHistory userHistory = curentUser.getUserHistoriesList().get(row);
+
+                            userHistory.setDatePlayed(getCellEditorValue().toString());
+                        }
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                });
+
+                return jTextFieldDatePlayed;
+            }
+            public Object getCellEditorValue() {
+                return jTextFieldDatePlayed.getText();
+            }
+
+        });
+
+
         
         if (curentUser != null) {
             for (UserHistory userHistory : curentUser.getUserHistoriesList()) {

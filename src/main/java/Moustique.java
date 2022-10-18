@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class Moustique extends Rectangle implements Deplacable {
 
-    SoundHandler soundHandler = new SoundHandler("src/main/resources/");
     public Moustique(int hauteurEcran, int largeurEcran) {
         super(0, 0, 0, 0);
         reinitialiser(largeurEcran, hauteurEcran);
@@ -33,7 +32,6 @@ public class Moustique extends Rectangle implements Deplacable {
     public void deplacer(int largeurEcran, int hauteurEcran) {
         x -= 1;
         if (x < -largeur) {
-            soundHandler.playSound("mosquiteSound.wav" , false );
             reinitialiser(largeurEcran, hauteurEcran);
         }
 
