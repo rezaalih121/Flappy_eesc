@@ -522,12 +522,7 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
             listSprite.add(oiseau);
 
 
-            for (int i = 0; i < nombreDeMoustique; i++) {
-                moustique = new Moustique(largeurEcran, hauteurEcran);
-                listDeplacable.add(moustique);
-                listMoustique.add(moustique);
-                point++;
-            }
+
             for (int i = 0; i < nombreDeMechantOiseau; i++) {
                 OiseauMechant oiseauMechant = new OiseauMechant(largeurEcran, hauteurEcran);
                 listDeplacable.add(oiseauMechant);
@@ -539,6 +534,12 @@ public class Flappy extends Canvas implements KeyListener, EventListener, MouseL
                 listDeplacable.add(nuage);
                 listSprite.add(nuage);
 
+            }
+            for (int i = 0; i < nombreDeMoustique; i++) {
+                moustique = new Moustique(largeurEcran, hauteurEcran);
+                listDeplacable.add(moustique);
+                listMoustique.add(moustique);
+                point++;
             }
         } else {
 
